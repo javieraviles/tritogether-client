@@ -4,18 +4,18 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Users
+      Athletes
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let user of users">
+    <ion-item *ngFor="let athlete of athletes">
       <ion-icon [name]="person" slot="start"></ion-icon>
-      {{user.username}}
+      {{athlete.name}}
       <div class="item-note" slot="end">
-        {{user.firstName}}
+        {{athlete.email}}
       </div>
     </ion-item>
   </ion-list>

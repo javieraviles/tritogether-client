@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 
 import { config } from './config';
 
-import { User } from './models/user';
+import { Athlete } from './models/athlete';
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
+export class AthleteService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>(`${config.apiUrl}/users`);
+        return this.http.get<Athlete[]>(`${config.apiUrl}/athletes`);
     }
 }
