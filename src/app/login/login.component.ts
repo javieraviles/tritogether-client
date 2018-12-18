@@ -29,7 +29,8 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
           username: ['', Validators.required],
-          password: ['', Validators.required]
+          password: ['', Validators.required],
+          isCoach: [false]
       });
 
       // reset login status
@@ -37,19 +38,6 @@ export class LoginComponent implements OnInit {
 
       // get return url from route parameters or default to '/'
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-  }
-
-  ionViewWillEnter() {
-    // Timer is a bug fix until this get resolved
-    // https://github.com/ionic-team/ionic/issues/15343
-    const timer = setTimeout(() => {
-        clearTimeout(timer);
-        this.menuController.enable(false);
-    }, 100);
-  }
-
-  ionViewDidLeave() {
-    this.menuController.enable(true);
   }
 
   // convenience getter for easy access to form fields
@@ -64,11 +52,12 @@ export class LoginComponent implements OnInit {
       }
 
       this.loading = true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value)
+      this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.isCoach.value)
           .pipe(first())
           .subscribe(
               data => {
                   this.router.navigate([this.returnUrl]);
+                  this.loading = false;
               },
               error => {
                   this.error = error;

@@ -22,7 +22,8 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
-  }
+  },
+  { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' }
 ];
 
 @NgModule({
