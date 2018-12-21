@@ -1,16 +1,26 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start" *ngIf="activities&&athletes">
+      <ion-button (click)="clearAthlete()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary">
       <ion-button href="/login">
         <ion-icon slot="icon-only" name="contact"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
+  <ion-list *ngIf="!activities&&athletes">
+    <ion-item *ngFor="let athlete of athletes" (click)="selectAthlete(athlete)">
+      <ion-label>{{athlete.name}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="activities">
     <ion-item *ngFor="let activity of activities">
       <ion-label>{{activity.description}}</ion-label>
     </ion-item>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivityService } from '../activity.service';
 import { CoachService } from '../coach.service';
-import { Activity } from '../models';
+import { Activity, Athlete } from '../models';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -13,33 +13,48 @@ export class HomePage implements OnInit {
 
   currentUser: any = null;
   activities: Activity[];
+  athletes: Athlete[] = null;
+  toolbarTitle: string;
 
   constructor(private activityService: ActivityService,
     private coachService: CoachService) {}
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+    this.toolbarTitle = this.currentUser.user.name;
     if (this.currentUser.user.rol === 'coach') {
-      this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
-          athletes => {
-            this.activityService.getAthleteActivities(athletes[0].id).pipe(first()).subscribe(
-              activities => {
-                this.activities = activities;
-              },
-              error => {
-              });
-          },
-          error => {
-          });
+      this.getCoachAthletes();
     } else {
-      this.activityService.getAthleteActivities(this.currentUser.user.id).pipe(first()).subscribe(
-        activities => {
-          this.activities = activities;
-        },
-        error => {
-        });
+      this.getAthleteActivities(this.currentUser.user.id);
     }
+  }
+
+  selectAthlete(athlete: Athlete) {
+    this.toolbarTitle = athlete.name;
+    this.getAthleteActivities(athlete.id);
+  }
+
+  clearAthlete() {
+    this.toolbarTitle = this.currentUser.user.name;
+    this.activities = null;
+  }
+
+  getCoachAthletes() {
+    this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
+      athletes => {
+        this.athletes = athletes;
+      },
+      error => {
+      });
+  }
+
+  getAthleteActivities(athleteId: number) {
+    this.activityService.getAthleteActivities(athleteId).pipe(first()).subscribe(
+      activities => {
+        this.activities = activities;
+      },
+      error => {
+      });
   }
 
 }
