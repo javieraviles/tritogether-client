@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActivityService } from '../activity.service';
 import { CoachService } from '../coach.service';
 import { Activity, Athlete } from '../models';
@@ -15,8 +16,10 @@ export class HomePage implements OnInit {
   activities: Activity[];
   athletes: Athlete[] = null;
   toolbarTitle: string;
+  selectedAthlete: Athlete = null;
 
-  constructor(private activityService: ActivityService,
+  constructor(private router: Router,
+    private activityService: ActivityService,
     private coachService: CoachService) {}
 
   ngOnInit() {
@@ -30,6 +33,7 @@ export class HomePage implements OnInit {
   }
 
   selectAthlete(athlete: Athlete) {
+    this.selectedAthlete = athlete;
     this.toolbarTitle = athlete.name;
     this.getAthleteActivities(athlete.id);
   }
@@ -37,6 +41,7 @@ export class HomePage implements OnInit {
   clearAthlete() {
     this.toolbarTitle = this.currentUser.user.name;
     this.activities = null;
+    this.selectedAthlete = null;
   }
 
   getCoachAthletes() {
@@ -55,6 +60,10 @@ export class HomePage implements OnInit {
       },
       error => {
       });
+  }
+
+  addActivity() {
+    this.router.navigate(['/addActivity', { athleteId: this.selectedAthlete.id }]);
   }
 
 }

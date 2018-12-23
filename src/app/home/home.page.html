@@ -25,4 +25,10 @@
       <ion-label>{{activity.description}}</ion-label>
     </ion-item>
   </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="activities&&athletes">
+    <ion-fab-button (click)="addActivity()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

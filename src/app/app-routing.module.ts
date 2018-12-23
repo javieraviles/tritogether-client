@@ -20,10 +20,14 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'addActivity',
+    loadChildren: './add-activity/add-activity.module#AddActivityPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'login',
     component: LoginComponent
-  },
-  { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' }
+  }
 ];
 
 @NgModule({
