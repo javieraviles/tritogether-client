@@ -16,4 +16,8 @@ export class ActivityService {
     getAthleteActivities(athleteId: number) {
         return this.http.get<Activity[]>(`${config.apiUrl}/athletes/${athleteId}/activities`);
     }
+
+    createActivity(athleteId: number, activity: Activity) {
+        return this.http.post<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities`, activity);
+    }
 }
