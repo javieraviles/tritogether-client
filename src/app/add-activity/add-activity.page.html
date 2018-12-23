@@ -4,29 +4,38 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Create activity</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmit()" (keydown)="onSubmit()" [disabled]="loading">
+        <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+        Save
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
     <form [formGroup]="activityForm">
+      
         <ion-item>
-            <ion-label position="floating">Description</ion-label>
-            <ion-input type="text" formControlName="description" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></ion-input>
+          <ion-label position="floating">Description</ion-label>
+          <ion-input type="text" formControlName="description" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="submitted && f.description.errors">
-            <div *ngIf="f.description.errors.required">Description is required</div>
+          <div *ngIf="f.description.errors.required">Description is required</div>
         </div>
+
         <ion-item>
-            <ion-label position="floating">Date</ion-label>
-            <ion-datetime formControlName="date" [ngClass]="{ 'is-invalid': submitted && f.date.errors }" display-format="DD/MM/YYYY" [value]="defaultDatePicker" [max]="maxDatePicker"></ion-datetime>
+          <ion-label position="floating">Date</ion-label>
+          <ion-datetime formControlName="date" display-format="DD/MM/YYYY" [value]="defaultDatePicker" [max]="maxDatePicker"></ion-datetime>
         </ion-item>
-        <div *ngIf="submitted && f.date.errors">
-            <div *ngIf="f.date.errors.required">Date is required</div>
-        </div>
-        <ion-button [disabled]="loading" expand="block" (click)="onSubmit()" (keydown)="onSubmit()">
-            <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-            Create
-        </ion-button>
+
+        <ion-item>
+          <ion-label position="floating">Discipline</ion-label>
+          <ion-select formControlName="discipline" [value]="disciplines[0]" okText="OK" cancelText="Cancel">
+            <ion-select-option *ngFor="let discipline of disciplines" [value]="discipline">{{discipline.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
         <div *ngIf="error">{{error}}</div>
     </form>
 </ion-content>

@@ -14,6 +14,7 @@ import { Activity, Discipline } from '../models';
 export class AddActivityPage implements OnInit {
 
   activityForm: FormGroup;
+  disciplines: Discipline[] = [];
   loading = false;
   submitted = false;
   error = '';
@@ -34,8 +35,25 @@ export class AddActivityPage implements OnInit {
 
     this.activityForm = this.formBuilder.group({
       description: ['', Validators.required],
-      date: ['', Validators.required]
+      date: ['', Validators.required],
+      discipline: ['', Validators.required]
     });
+
+    // TODO get disciplines from DB when API is ready
+    this.disciplines.push(
+      {
+        id : 1,
+        name : 'swimming'
+      },
+      {
+        id : 2,
+        name : 'cycling'
+      },
+      {
+        id : 3,
+        name : 'running'
+      }
+    );
   }
 
    // convenience getter for easy access to form fields
@@ -49,11 +67,9 @@ export class AddActivityPage implements OnInit {
            return;
        }
        const activity = new Activity();
-       const discipline = new Discipline();
-       discipline.id = 1;
        activity.description = this.f.description.value;
        activity.date = new Date(this.f.date.value);
-       activity.discipline = discipline;
+       activity.discipline = this.f.discipline.value;
 
        this.loading = true;
        this.activityService.createActivity( +this.route.snapshot.paramMap.get('athleteId'), activity)
