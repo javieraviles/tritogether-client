@@ -15,11 +15,6 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'athletes',
-    loadChildren: './athletes/athletes.module#AthletesPageModule',
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'addActivity',
     loadChildren: './add-activity/add-activity.module#AddActivityPageModule',
     canActivate: [AuthGuard]
