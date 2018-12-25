@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Athlete, Coach } from '../models';
+import { AthleteService } from '../services/athlete.service';
+import { CoachService } from '../services/coach.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -8,12 +13,114 @@ import { Router } from '@angular/router';
 })
 export class ProfilePage implements OnInit {
 
-  currentUser: any = null;
+  userForm: FormGroup;
+  currentUser: any = '';
+  rol: String = '';
+  loading = false;
+  submitted = false;
+  error = '';
 
-  constructor(private router: Router) { }
+  constructor( public toastController: ToastController,
+    private formBuilder: FormBuilder,
+    private athleteService: AthleteService,
+    private coachService: CoachService) { }
 
   ngOnInit() {
+    this.userForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
+
+  ionViewWillEnter() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.rol = this.currentUser.user.rol;
+    this.getUserInfo();
+    this.userForm.reset();
+  }
+
+  getUserInfo() {
+    if (this.rol === 'coach') {
+      this.coachService.getCoach(+this.currentUser.user.id).pipe(first()).subscribe(
+        coach => {
+          this.currentUser = coach;
+        },
+        error => {
+        });
+    } else {
+      this.athleteService.getAthlete(+this.currentUser.user.id).pipe(first()).subscribe(
+        athlete => {
+          this.currentUser = athlete;
+        },
+        error => {
+        });
+    }
+  }
+
+  // convenience getter for easy access to form fields
+  get f() { return this.userForm.controls; }
+
+  onSubmit() {
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.userForm.invalid) {
+        return;
+    }
+
+    this.loading = true;
+    if (this.rol === 'coach') {
+      const updatedUser: Coach = {
+        name : this.f.name.value,
+        email: this.f.email.value,
+        password: this.f.password.value
+      };
+
+      this.coachService.updateCoach( +this.currentUser.id, updatedUser)
+      .pipe(first())
+      .subscribe(
+          data => {
+              this.onSubmitSuccess();
+          },
+          error => {
+              this.onSubmitError(error);
+          });
+    } else {
+      const updatedUser: Athlete = {
+        name : this.f.name.value,
+        email: this.f.email.value,
+        password: this.f.password.value,
+        coach: this.currentUser.coach
+      };
+      this.athleteService.updateAthlete( +this.currentUser.id, updatedUser)
+      .pipe(first())
+      .subscribe(
+          data => {
+              this.onSubmitSuccess();
+          },
+          error => {
+              this.onSubmitError(error);
+          });
+    }
+  }
+
+  onSubmitSuccess() {
+    this.presentToast();
+    this.loading = false;
+  }
+
+  onSubmitError(error: any) {
+    this.error = error;
+    this.loading = false;
+  }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Your profile has been updated.',
+      duration: 2000
+    });
+    toast.present();
   }
 
 }
