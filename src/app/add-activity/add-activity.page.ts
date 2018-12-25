@@ -14,7 +14,7 @@ import { Activity, Discipline } from '../models';
 export class AddActivityPage implements OnInit {
 
   activityForm: FormGroup;
-  disciplines: Discipline[] = [];
+  disciplines: Discipline[];
   loading = false;
   submitted = false;
   error = '';
@@ -28,19 +28,31 @@ export class AddActivityPage implements OnInit {
     private activityService: ActivityService) { }
 
   ngOnInit() {
-    const today = new Date();
-    today.setFullYear(today.getFullYear() + 1);
-    this.maxDatePicker = today.toISOString();
-    this.defaultDatePicker = new Date().toISOString();
-
     this.activityForm = this.formBuilder.group({
       description: ['', Validators.required],
       date: ['', Validators.required],
       discipline: ['', Validators.required]
     });
 
+    this.initDisciplines();
+  }
+
+  ionViewWillEnter() {
+    this.activityForm.reset();
+
+    const today = new Date();
+    today.setFullYear(today.getFullYear() + 1);
+    this.maxDatePicker = today.toISOString();
+    this.defaultDatePicker = new Date().toISOString();
+
+    this.activityForm.patchValue({
+      discipline: this.disciplines[0]
+    });
+  }
+
+  initDisciplines() {
     // TODO get disciplines from DB when API is ready
-    this.disciplines.push(
+    this.disciplines = [
       {
         id : 1,
         name : 'swimming'
@@ -53,7 +65,11 @@ export class AddActivityPage implements OnInit {
         id : 3,
         name : 'running'
       }
-    );
+    ];
+  }
+
+  backToActivities() {
+    this.router.navigate(['/activities', { athleteId: +this.route.snapshot.paramMap.get('athleteId') }]);
   }
 
    // convenience getter for easy access to form fields
@@ -78,7 +94,7 @@ export class AddActivityPage implements OnInit {
                data => {
                    this.presentToast();
                    this.loading = false;
-                   this.router.navigate(['/home']);
+                   this.backToActivities();
                },
                error => {
                    this.error = error;

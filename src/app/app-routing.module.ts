@@ -15,6 +15,16 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'profile',
+    loadChildren: './profile/profile.module#ProfilePageModule',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'activities',
+    loadChildren: './activities/activities.module#ActivitiesPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'addActivity',
     loadChildren: './add-activity/add-activity.module#AddActivityPageModule',
     canActivate: [AuthGuard]

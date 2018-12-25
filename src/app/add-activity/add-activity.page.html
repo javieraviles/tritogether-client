@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-button (click)="backToActivities()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Create activity</ion-title>
     <ion-buttons slot="primary">
@@ -17,21 +19,21 @@
     <form [formGroup]="activityForm">
       
         <ion-item>
-          <ion-label position="floating">Description</ion-label>
-          <ion-input type="text" formControlName="description" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></ion-input>
+          <ion-label position="stacked">Description</ion-label>
+          <ion-textarea placeholder="Enter session notes here..." formControlName="description" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></ion-textarea>
         </ion-item>
         <div *ngIf="submitted && f.description.errors">
           <div *ngIf="f.description.errors.required">Description is required</div>
         </div>
 
         <ion-item>
-          <ion-label position="floating">Date</ion-label>
+          <ion-label position="stacked">Date</ion-label>
           <ion-datetime formControlName="date" display-format="DD/MM/YYYY" [value]="defaultDatePicker" [max]="maxDatePicker"></ion-datetime>
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Discipline</ion-label>
-          <ion-select formControlName="discipline" [value]="disciplines[0]" okText="OK" cancelText="Cancel">
+          <ion-label position="stacked">Discipline</ion-label>
+          <ion-select formControlName="discipline" okText="OK" cancelText="Cancel">
             <ion-select-option *ngFor="let discipline of disciplines" [value]="discipline">{{discipline.name}}</ion-select-option>
           </ion-select>
         </ion-item>
