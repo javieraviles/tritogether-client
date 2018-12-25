@@ -102,7 +102,7 @@ export class AddActivityPage implements OnInit {
                });
    }
 
-   async presentToast() {
+  async presentToast() {
     const toast = await this.toastController.create({
       message: 'Your activity has been saved.',
       duration: 2000
