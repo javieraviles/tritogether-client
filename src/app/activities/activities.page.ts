@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ActivityService } from '../activity.service';
-import { AthleteService } from '../athlete.service';
+import { ActivityService } from '../services/activity.service';
+import { AthleteService } from '../services/athlete.service';
 import { Activity, Athlete } from '../models';
 import { first } from 'rxjs/operators';
 

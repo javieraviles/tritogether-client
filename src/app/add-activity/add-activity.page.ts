@@ -3,7 +3,7 @@ import { ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { ActivityService } from '../activity.service';
+import { ActivityService } from '../services/activity.service';
 import { Activity, Discipline } from '../models';
 
 @Component({

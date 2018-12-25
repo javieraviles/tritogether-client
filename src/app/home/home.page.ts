@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CoachService } from '../coach.service';
+import { CoachService } from '../services/coach.service';
 import { Activity, Athlete } from '../models';
 import { first } from 'rxjs/operators';
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { config } from './config';
+import { config } from '../config';
 
-import { Activity } from './models';
+import { Activity } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ActivityService {
