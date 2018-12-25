@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -9,7 +10,7 @@ export class ProfilePage implements OnInit {
 
   currentUser: any = null;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));

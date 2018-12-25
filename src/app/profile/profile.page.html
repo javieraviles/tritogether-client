@@ -1,15 +1,20 @@
 <ion-header>
 <ion-toolbar color="primary">
-  <ion-buttons slot="primary">
-    <ion-button href="/login">
-      <ion-icon slot="icon-only" name="contact"></ion-icon>
+  <ion-buttons slot="start">
+    <ion-button href="/home">
+      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-title>Home</ion-title>
+  <ion-title>Profile</ion-title>
+  <ion-buttons slot="primary">
+    <ion-button href="/login">
+      <ion-icon slot="icon-only" name="log-out"></ion-icon>
+    </ion-button>
+  </ion-buttons>
 </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  {{currentUser | json}}
+
 </ion-content>
   
