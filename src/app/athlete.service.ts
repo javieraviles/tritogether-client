@@ -12,4 +12,8 @@ export class AthleteService {
     getAll() {
         return this.http.get<Athlete[]>(`${config.apiUrl}/athletes`);
     }
+
+    getAthlete(athleteId: number) {
+        return this.http.get<Athlete>(`${config.apiUrl}/athletes/${athleteId}`);
+    }
 }
