@@ -7,6 +7,14 @@
   </ion-buttons>
   <ion-title>Profile</ion-title>
   <ion-buttons slot="primary">
+    <ion-button (click)="editMode = !editMode" *ngIf="!loading">
+      <ion-icon *ngIf="!editMode" slot="icon-only" name="create"></ion-icon>
+      <ion-icon *ngIf="editMode" slot="icon-only" name="close"></ion-icon>
+    </ion-button>
+    <ion-button [disabled]="loading" (click)="onSubmit()" (keydown)="onSubmit()" *ngIf="editMode">
+      <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+      <ion-icon slot="icon-only" name="save"></ion-icon>
+    </ion-button>
     <ion-button href="/login">
       <ion-icon slot="icon-only" name="log-out"></ion-icon>
     </ion-button>
@@ -15,14 +23,23 @@
 </ion-header>
 
 <ion-content padding>
-    <form [formGroup]="userForm">
+    <ion-list *ngIf="!editMode">
+      <ion-item>
+        <ion-label>{{currentUser.name}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>{{currentUser.email}}</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <form [formGroup]="userForm" *ngIf="editMode">
       
         <ion-item>
           <ion-label position="stacked">name</ion-label>
           <ion-input [value]="currentUser.name" type="text" min="5" max="80" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="submitted && f.name.errors">
-          <div *ngIf="f.description.errors.required">Name is required</div>
+          <div *ngIf="f.name.errors.required">Name is required</div>
         </div>
 
         <ion-item>
@@ -30,7 +47,7 @@
           <ion-input [value]="currentUser.email" type="email" min="10" max="100" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="submitted && f.email.errors">
-          <div *ngIf="f.description.errors.required">Email is required</div>
+          <div *ngIf="f.email.errors.required">Email is required</div>
         </div>
 
         <ion-item>
@@ -41,10 +58,6 @@
           <div *ngIf="f.password.errors.required">Password is required</div>
         </div>
 
-        <ion-button [disabled]="loading" expand="block" (click)="onSubmit()" (keydown)="onSubmit()">
-          <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-          <ion-icon *ngIf="!loading" name="save"></ion-icon> Update
-        </ion-button>
         <div *ngIf="error">{{error}}</div>
     </form>
 </ion-content>

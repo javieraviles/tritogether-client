@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Athlete, Coach } from '../models';
 import { AthleteService } from '../services/athlete.service';
 import { CoachService } from '../services/coach.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -19,9 +20,11 @@ export class ProfilePage implements OnInit {
   loading = false;
   submitted = false;
   error = '';
+  editMode: Boolean = false;
 
   constructor( public toastController: ToastController,
     private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService,
     private athleteService: AthleteService,
     private coachService: CoachService) { }
 
@@ -34,10 +37,16 @@ export class ProfilePage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.resetProfile();
+  }
+
+  resetProfile() {
+    this.editMode = false;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.rol = this.currentUser.user.rol;
     this.getUserInfo();
     this.userForm.reset();
+    this.loading = false;
   }
 
   getUserInfo() {
@@ -105,9 +114,18 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  onSubmitSuccess() {
+  refreshToken() {
+    this.authenticationService.login(this.f.email.value, this.f.password.value, this.rol === 'coach' ? true : false)
+      .pipe(first())
+      .subscribe(
+          data => {},
+          error => {});
+  }
+
+  async onSubmitSuccess() {
+    await this.refreshToken();
+    this.resetProfile();
     this.presentToast();
-    this.loading = false;
   }
 
   onSubmitError(error: any) {
