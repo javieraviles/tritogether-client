@@ -15,9 +15,9 @@ export class AddActivityPage implements OnInit {
 
   activityForm: FormGroup;
   disciplines: Discipline[];
-  loading = false;
-  submitted = false;
-  error = '';
+  loading: Boolean = false;
+  submitted: Boolean = false;
+  error: String = '';
   defaultDatePicker: String = null;
   maxDatePicker: String = null;
 
@@ -77,6 +77,7 @@ export class AddActivityPage implements OnInit {
 
    onSubmit() {
        this.submitted = true;
+       this.error = '';
 
        // stop here if form is invalid
        if (this.activityForm.invalid) {

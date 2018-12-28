@@ -40,30 +40,25 @@ export class ProfilePage implements OnInit {
     this.resetProfile();
   }
 
-  resetProfile() {
-    this.editMode = false;
+  async resetProfile() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.rol = this.currentUser.user.rol;
-    this.getUserInfo();
-    this.userForm.reset();
+    this.currentUser = await this.getUserInfo();
+    this.editMode = false;
+    this.submitted = false;
     this.loading = false;
+    this.userForm.patchValue({
+      name: this.currentUser.name,
+      email: this.currentUser.email,
+      password: ''
+    });
   }
 
   getUserInfo() {
     if (this.rol === 'coach') {
-      this.coachService.getCoach(+this.currentUser.user.id).pipe(first()).subscribe(
-        coach => {
-          this.currentUser = coach;
-        },
-        error => {
-        });
+      return this.coachService.getCoach(+this.currentUser.user.id).toPromise();
     } else {
-      this.athleteService.getAthlete(+this.currentUser.user.id).pipe(first()).subscribe(
-        athlete => {
-          this.currentUser = athlete;
-        },
-        error => {
-        });
+      return this.athleteService.getAthlete(+this.currentUser.user.id).toPromise();
     }
   }
 
@@ -72,6 +67,7 @@ export class ProfilePage implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+    this.error = '';
 
     // stop here if form is invalid
     if (this.userForm.invalid) {
@@ -115,16 +111,12 @@ export class ProfilePage implements OnInit {
   }
 
   refreshToken() {
-    this.authenticationService.login(this.f.email.value, this.f.password.value, this.rol === 'coach' ? true : false)
-      .pipe(first())
-      .subscribe(
-          data => {},
-          error => {});
+    return this.authenticationService.login(this.f.email.value, this.f.password.value, this.rol === 'coach' ? true : false).toPromise();
   }
 
   async onSubmitSuccess() {
     await this.refreshToken();
-    this.resetProfile();
+    await this.resetProfile();
     this.presentToast();
   }
 

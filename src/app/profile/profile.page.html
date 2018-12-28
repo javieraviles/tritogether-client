@@ -36,7 +36,7 @@
       
         <ion-item>
           <ion-label position="stacked">name</ion-label>
-          <ion-input [value]="currentUser.name" type="text" min="5" max="80" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" ></ion-input>
+          <ion-input type="text" min="5" max="80" formControlName="name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="submitted && f.name.errors">
           <div *ngIf="f.name.errors.required">Name is required</div>
@@ -44,7 +44,7 @@
 
         <ion-item>
           <ion-label position="stacked">email</ion-label>
-          <ion-input [value]="currentUser.email" type="email" min="10" max="100" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" ></ion-input>
+          <ion-input type="email" min="10" max="100" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="submitted && f.email.errors">
           <div *ngIf="f.email.errors.required">Email is required</div>

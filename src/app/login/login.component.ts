@@ -14,10 +14,10 @@ import { MenuController } from '@ionic/angular';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  loading = false;
-  submitted = false;
-  returnUrl: string;
-  error = '';
+  loading: Boolean = false;
+  submitted: Boolean = false;
+  returnUrl: String;
+  error: String = '';
 
   constructor(
       private formBuilder: FormBuilder,
@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
       this.submitted = true;
+      this.error = '';
 
       // stop here if form is invalid
       if (this.loginForm.invalid) {
