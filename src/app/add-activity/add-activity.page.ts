@@ -57,12 +57,12 @@ export class AddActivityPage implements OnInit {
     this.maxDatePicker = today.toISOString();
 
     if ( Boolean(this.activityId) ) {
+      this.editMode = false;
       this.activityService.getActivity( this.athleteId, this.activityId )
            .pipe(first())
            .subscribe(
               activity => {
                 this.activity = activity;
-                this.editMode = false;
                 this.activityForm.patchValue({
                   discipline: this.disciplines.find(i => i.id === activity.discipline.id),
                   description: activity.description,
