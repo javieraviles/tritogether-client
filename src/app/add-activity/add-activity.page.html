@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-title>{{activityId ? 'Edit' : 'Create'}} activity</ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="editMode = !editMode" *ngIf="!loading && isUserCoach">
+      <ion-button (click)="editMode = !editMode" *ngIf="!loading && isUserCoach && activityId">
         <ion-icon *ngIf="!editMode" slot="icon-only" name="create"></ion-icon>
         <ion-icon *ngIf="editMode" slot="icon-only" name="close"></ion-icon>
       </ion-button>
