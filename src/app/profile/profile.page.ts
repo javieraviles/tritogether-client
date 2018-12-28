@@ -16,7 +16,7 @@ export class ProfilePage implements OnInit {
 
   userForm: FormGroup;
   currentUser: any = '';
-  rol: String = '';
+  isUserCoach: Boolean = false;
   loading = false;
   submitted = false;
   error = '';
@@ -42,7 +42,7 @@ export class ProfilePage implements OnInit {
 
   async resetProfile() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.rol = this.currentUser.user.rol;
+    this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.currentUser = await this.getUserInfo();
     this.editMode = false;
     this.submitted = false;
@@ -55,7 +55,7 @@ export class ProfilePage implements OnInit {
   }
 
   getUserInfo() {
-    if (this.rol === 'coach') {
+    if (this.isUserCoach) {
       return this.coachService.getCoach(+this.currentUser.user.id).toPromise();
     } else {
       return this.athleteService.getAthlete(+this.currentUser.user.id).toPromise();
@@ -75,7 +75,7 @@ export class ProfilePage implements OnInit {
     }
 
     this.loading = true;
-    if (this.rol === 'coach') {
+    if (this.isUserCoach) {
       const updatedUser: Coach = {
         name : this.f.name.value,
         email: this.f.email.value,
@@ -111,7 +111,7 @@ export class ProfilePage implements OnInit {
   }
 
   refreshToken() {
-    return this.authenticationService.login(this.f.email.value, this.f.password.value, this.rol === 'coach' ? true : false).toPromise();
+    return this.authenticationService.login(this.f.email.value, this.f.password.value, this.isUserCoach).toPromise();
   }
 
   async onSubmitSuccess() {

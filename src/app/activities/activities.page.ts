@@ -15,7 +15,7 @@ export class ActivitiesPage {
   currentUser: any = null;
   activities: Activity[] = null;
   isUserCoach: Boolean = false;
-  toolbarTitle: string;
+  toolbarTitle: String;
   athlete: Athlete = null;
 
   constructor(private router: Router,
@@ -34,7 +34,7 @@ export class ActivitiesPage {
     this.activities = null;
   }
 
-  getAthleteActivities(athleteId: number) {
+  getAthleteActivities(athleteId: Number) {
     this.activityService.getAthleteActivities(athleteId).pipe(first()).subscribe(
       activities => {
         this.activities = activities;
@@ -43,7 +43,7 @@ export class ActivitiesPage {
       });
   }
 
-  getAthleteInfo(athleteId: number) {
+  getAthleteInfo(athleteId: Number) {
     this.athleteService.getAthlete(athleteId).pipe(first()).subscribe(
       athlete => {
         this.athlete = athlete;
@@ -55,6 +55,23 @@ export class ActivitiesPage {
 
   addActivity() {
     this.router.navigate(['/addActivity', { athleteId: this.athlete.id }]);
+  }
+
+  showActivity(activity: Activity) {
+    this.router.navigate(['/addActivity', { activityId: activity.id,  athleteId: this.athlete.id }]);
+  }
+
+  getActivityIcon(discipline: String) {
+    switch (discipline) {
+      case 'swimming':
+        return 'water';
+      case 'cycling':
+        return 'bicycle';
+      case 'running':
+        return 'walk';
+      case 'fitness':
+        return 'fitness';
+    }
   }
 
 }

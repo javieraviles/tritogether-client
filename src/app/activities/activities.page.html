@@ -17,8 +17,10 @@
 <ion-content padding>
 
   <ion-list *ngIf="activities">
-    <ion-item *ngFor="let activity of activities">
+    <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true">
+      <ion-icon [name]="getActivityIcon(activity.discipline.name)" slot="start"></ion-icon>
       <ion-label>{{activity.description}}</ion-label>
+      <ion-note slot="end">{{activity.date | date:'d LLL'}}</ion-note>
     </ion-item>
   </ion-list>
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
@@ -18,10 +18,16 @@ export class AddActivityPage implements OnInit {
   loading: Boolean = false;
   submitted: Boolean = false;
   error: String = '';
-  defaultDatePicker: String = null;
   maxDatePicker: String = null;
+  editMode: Boolean = true;
+  activityId: Number = null;
+  athleteId: Number = null;
+  activity: Activity = null;
+  currentUser: any = null;
+  isUserCoach: Boolean = false;
 
   constructor( public toastController: ToastController,
+    public alertController: AlertController,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
@@ -38,16 +44,42 @@ export class AddActivityPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.activityForm.reset();
+    this.loading = false;
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
 
+    this.activityId = +this.route.snapshot.paramMap.get('activityId');
+    this.athleteId = +this.route.snapshot.paramMap.get('athleteId');
+
+    this.activityForm.reset();
     const today = new Date();
     today.setFullYear(today.getFullYear() + 1);
     this.maxDatePicker = today.toISOString();
-    this.defaultDatePicker = new Date().toISOString();
 
-    this.activityForm.patchValue({
-      discipline: this.disciplines[0]
-    });
+    if ( Boolean(this.activityId) ) {
+      this.activityService.getActivity( this.athleteId, this.activityId )
+           .pipe(first())
+           .subscribe(
+              activity => {
+                this.activity = activity;
+                this.editMode = false;
+                this.activityForm.patchValue({
+                  discipline: this.disciplines.find(i => i.id === activity.discipline.id),
+                  description: activity.description,
+                  date: new Date(activity.date).toISOString()
+                });
+              },
+              error => {
+                this.error = error;
+              });
+    } else {
+      this.editMode = true;
+      this.activityForm.patchValue({
+        discipline: this.disciplines[0],
+        date: new Date().toISOString()
+      });
+    }
+
   }
 
   initDisciplines() {
@@ -64,6 +96,10 @@ export class AddActivityPage implements OnInit {
       {
         id : 3,
         name : 'running'
+      },
+      {
+        id : 4,
+        name : 'fitness'
       }
     ];
   }
@@ -72,43 +108,102 @@ export class AddActivityPage implements OnInit {
     this.router.navigate(['/activities', { athleteId: +this.route.snapshot.paramMap.get('athleteId') }]);
   }
 
-   // convenience getter for easy access to form fields
-   get f() { return this.activityForm.controls; }
+  // convenience getter for easy access to form fields
+  get f() { return this.activityForm.controls; }
 
-   onSubmit() {
-       this.submitted = true;
-       this.error = '';
+  onSubmit() {
+      this.submitted = true;
+      this.error = '';
 
-       // stop here if form is invalid
-       if (this.activityForm.invalid) {
-           return;
-       }
-       const activity = new Activity();
-       activity.description = this.f.description.value;
-       activity.date = new Date(this.f.date.value);
-       activity.discipline = this.f.discipline.value;
+      // stop here if form is invalid
+      if (this.activityForm.invalid) {
+          return;
+      }
 
-       this.loading = true;
-       this.activityService.createActivity( +this.route.snapshot.paramMap.get('athleteId'), activity)
-           .pipe(first())
-           .subscribe(
-               data => {
-                   this.presentToast();
-                   this.loading = false;
-                   this.backToActivities();
-               },
-               error => {
-                   this.error = error;
-                   this.loading = false;
-               });
-   }
+      const activity = new Activity();
+      activity.description = this.f.description.value;
+      activity.date = new Date(this.f.date.value);
+      activity.discipline = this.f.discipline.value;
 
-  async presentToast() {
+      this.loading = true;
+
+      // new activity or editing an existing one?
+      if ( Boolean(this.activityId) ) {
+        this.activityService.updateActivity(this.athleteId, this.activityId, activity)
+          .pipe(first())
+          .subscribe(
+              data => {
+                this.onSubmitSuccess();
+              },
+              error => {
+                this.onSubmitError(error);
+              });
+      } else {
+        this.activityService.createActivity(this.athleteId, activity)
+          .pipe(first())
+          .subscribe(
+              data => {
+                this.onSubmitSuccess();
+              },
+              error => {
+                this.onSubmitError(error);
+              });
+        }
+  }
+
+  onSubmitSuccess() {
+    this.presentToast('Your activity has been saved.');
+    this.backToActivities();
+  }
+
+  onSubmitError(error: String) {
+    this.error = error;
+    this.loading = false;
+  }
+
+  async presentToast( message: string ) {
     const toast = await this.toastController.create({
-      message: 'Your activity has been saved.',
+      message: message,
       duration: 2000
     });
     toast.present();
+  }
+
+  deleteActivity() {
+    this.activityService.deleteActivity(this.athleteId, this.activityId)
+      .pipe(first())
+      .subscribe(
+        () => {
+          this.presentToast('Your activity has been deleted.');
+          this.backToActivities();
+        },
+        error => {
+          this.error = error;
+        });
+  }
+
+  async deleteActivityAlertConfirmation() {
+    const deleteAlert = await this.alertController.create({
+      header: 'Delete activity',
+      message: 'Please confirm you want to delete the activity',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            // console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Confirm',
+          handler: () => {
+            this.deleteActivity();
+          }
+        }
+      ]
+    });
+
+    await deleteAlert.present();
   }
 
 }
