@@ -1,9 +1,9 @@
 import { Athlete } from './athlete';
 
 export class Coach {
-    id?: number;
-    name: string;
-    email: string;
-    password?: string;
+    id?: Number;
+    name: String;
+    email: String;
+    password?: String;
     athletes?: Athlete[];
 }

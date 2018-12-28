@@ -1,5 +1,5 @@
 export interface IConfig {
-    apiUrl: string;
+    apiUrl: String;
 }
 
 const config: IConfig = {

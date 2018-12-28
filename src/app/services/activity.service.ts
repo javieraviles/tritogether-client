@@ -13,11 +13,23 @@ export class ActivityService {
         return this.http.get<Activity[]>(`${config.apiUrl}/athletes`);
     }
 
-    getAthleteActivities(athleteId: number) {
+    getActivity(athleteId: Number, activityId: Number) {
+        return this.http.get<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities/${activityId}`);
+    }
+
+    getAthleteActivities(athleteId: Number) {
         return this.http.get<Activity[]>(`${config.apiUrl}/athletes/${athleteId}/activities`);
     }
 
-    createActivity(athleteId: number, activity: Activity) {
+    createActivity(athleteId: Number, activity: Activity) {
         return this.http.post<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities`, activity);
+    }
+
+    updateActivity(athleteId: Number, activityId: Number, activity: Activity) {
+        return this.http.put<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities/${activityId}`, activity);
+    }
+
+    deleteActivity(athleteId: Number, activityId: Number) {
+        return this.http.delete<void>(`${config.apiUrl}/athletes/${athleteId}/activities/${activityId}`);
     }
 }
