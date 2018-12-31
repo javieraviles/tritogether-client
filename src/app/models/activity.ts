@@ -1,8 +1,8 @@
 import { Discipline } from '../models';
 
 export class Activity {
-    id: Number;
-    description: String;
+    id: number;
+    description: string;
     date: Date;
     discipline: Discipline;
 }

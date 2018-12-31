@@ -17,11 +17,11 @@ export class AddActivityPage implements OnInit {
   disciplines: Discipline[];
   loading: Boolean = false;
   submitted: Boolean = false;
-  error: String = '';
-  maxDatePicker: String = null;
+  error = '';
+  maxDatePicker: string = null;
   editMode: Boolean = true;
-  activityId: Number = null;
-  athleteId: Number = null;
+  activityId: number = null;
+  athleteId: number = null;
   activity: Activity = null;
   currentUser: any = null;
   isUserCoach: Boolean = false;
@@ -156,7 +156,7 @@ export class AddActivityPage implements OnInit {
     this.backToActivities();
   }
 
-  onSubmitError(error: String) {
+  onSubmitError(error: string) {
     this.error = error;
     this.loading = false;
   }

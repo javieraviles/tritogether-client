@@ -13,11 +13,11 @@ export class AthleteService {
         return this.http.get<Athlete[]>(`${config.apiUrl}/athletes`);
     }
 
-    getAthlete(athleteId: Number) {
+    getAthlete(athleteId: number) {
         return this.http.get<Athlete>(`${config.apiUrl}/athletes/${athleteId}`);
     }
 
-    updateAthlete(athleteId: Number, athlete: Athlete) {
+    updateAthlete(athleteId: number, athlete: Athlete) {
         return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}`, athlete);
     }
 }

@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary">
-      <ion-button href="/profile">
+      <ion-button routerLink="/profile">
         <ion-icon slot="icon-only" name="contact"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -12,7 +12,7 @@
 <ion-content padding>
   
   <ion-list *ngIf="athletes">
-    <ion-item *ngFor="let athlete of athletes" (click)="selectAthlete(athlete)">
+    <ion-item *ngFor="let athlete of athletes" (click)="selectAthlete(athlete)" detail="true">
       <ion-label>{{athlete.name}}</ion-label>
     </ion-item>
   </ion-list>

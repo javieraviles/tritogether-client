@@ -9,7 +9,7 @@ export class AuthenticationService {
 
     constructor(private http: HttpClient) { }
 
-    login(username: String, password: String, isCoach: Boolean) {
+    login(username: string, password: string, isCoach: Boolean) {
         return this.http.post<any>(`${config.apiUrl}/signin`, { email: username, password: password, isCoach: isCoach })
             .pipe(map(user => {
                 // login successful if there's a jwt token in the response

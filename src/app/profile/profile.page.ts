@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Athlete, Coach } from '../models';
 import { AthleteService } from '../services/athlete.service';
 import { CoachService } from '../services/coach.service';
@@ -22,7 +23,8 @@ export class ProfilePage implements OnInit {
   error = '';
   editMode: Boolean = false;
 
-  constructor( public toastController: ToastController,
+  constructor( private router: Router,
+    public toastController: ToastController,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private athleteService: AthleteService,

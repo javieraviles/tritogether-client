@@ -1,7 +1,7 @@
 export class Discipline {
-    id: Number;
-    name: String;
-    constructor(id: Number, name: String) {
+    id: number;
+    name: string;
+    constructor(id: number, name: string) {
         this.id = id;
         this.name = name;
     }

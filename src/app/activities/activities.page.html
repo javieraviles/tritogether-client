@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start" *ngIf="isUserCoach">
-      <ion-button href="/home">
+      <ion-button routerLink="/home">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary" *ngIf="!isUserCoach">
-      <ion-button href="/profile">
+      <ion-button routerLink="/profile">
         <ion-icon slot="icon-only" name="contact"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -23,6 +23,10 @@
       <ion-note slot="end">{{activity.date | date:'d LLL'}}</ion-note>
     </ion-item>
   </ion-list>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreActivities($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more activities..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isUserCoach">
     <ion-fab-button (click)="addActivity()">

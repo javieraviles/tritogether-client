@@ -13,23 +13,27 @@ export class ActivityService {
         return this.http.get<Activity[]>(`${config.apiUrl}/athletes`);
     }
 
-    getActivity(athleteId: Number, activityId: Number) {
+    getActivity(athleteId: number, activityId: number) {
         return this.http.get<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities/${activityId}`);
     }
 
-    getAthleteActivities(athleteId: Number) {
-        return this.http.get<Activity[]>(`${config.apiUrl}/athletes/${athleteId}/activities`);
+    getAthleteActivities(athleteId: number, params?) {
+        return this.http.get<Activity[]>(`${config.apiUrl}/athletes/${athleteId}/activities`, { params: params });
     }
 
-    createActivity(athleteId: Number, activity: Activity) {
+    getCountAthleteActivities(athleteId: number) {
+        return this.http.get<number>(`${config.apiUrl}/athletes/${athleteId}/activities/count`);
+    }
+
+    createActivity(athleteId: number, activity: Activity) {
         return this.http.post<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities`, activity);
     }
 
-    updateActivity(athleteId: Number, activityId: Number, activity: Activity) {
+    updateActivity(athleteId: number, activityId: number, activity: Activity) {
         return this.http.put<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities/${activityId}`, activity);
     }
 
-    deleteActivity(athleteId: Number, activityId: Number) {
+    deleteActivity(athleteId: number, activityId: number) {
         return this.http.delete<void>(`${config.apiUrl}/athletes/${athleteId}/activities/${activityId}`);
     }
 }

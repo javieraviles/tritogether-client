@@ -13,15 +13,15 @@ export class CoachService {
         return this.http.get<Coach[]>(`${config.apiUrl}/coaches`);
     }
 
-    getCoach(coachId: Number) {
+    getCoach(coachId: number) {
         return this.http.get<Coach>(`${config.apiUrl}/coaches/${coachId}`);
     }
 
-    getCoachAthletes(coachId: Number) {
+    getCoachAthletes(coachId: number) {
         return this.http.get<Athlete[]>(`${config.apiUrl}/coaches/${coachId}/athletes`);
     }
 
-    updateCoach(coachId: Number, coach: Coach) {
+    updateCoach(coachId: number, coach: Coach) {
         return this.http.put<Coach>(`${config.apiUrl}/coaches/${coachId}`, coach);
     }
 }
