@@ -12,16 +12,16 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./activities.page.scss'],
 })
 export class ActivitiesPage {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  // @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   currentUser: any = null;
   activities: Activity[] = null;
   isUserCoach: Boolean = false;
   toolbarTitle: string;
   athlete: Athlete = null;
-  page: number = 0;
-  pageSize: number = 5;
-  count: number = 1000;
+  page: number;
+  pageSize: number;
+  count: number;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -31,17 +31,15 @@ export class ActivitiesPage {
   ionViewWillEnter() {
     this.activities = [];
     this.page = 0;
-    // TODO this is not working, infiniteScroll won't work until the component is reinstanciated
-    this.infiniteScroll.disabled = false;
+    this.pageSize = 5;
+    this.count = 1000;
+    // This is not working, infiniteScroll won't work until the component is reinstanciated
+    // this.infiniteScroll.disabled = false;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.getAthleteInfo(+this.route.snapshot.paramMap.get('athleteId'));
     this.getAthleteActivities();
     this.getCountAthleteActivities();
-  }
-
-  ionViewWillLeave() {
-    this.activities = null;
   }
 
   getAthleteActivities(eventScroll?) {
@@ -68,12 +66,18 @@ export class ActivitiesPage {
   }
 
   loadMoreActivities(eventScroll) {
-    this.page = this.page + this.pageSize;
-    this.getAthleteActivities(eventScroll);
+    if (this.page < this.count) {
+      this.page = this.page + this.pageSize;
+      this.getAthleteActivities(eventScroll);
+    } else {
+      eventScroll.target.complete();
+    }
 
+    // if disabled, cant get enabled back so by now will leave it enabled and just not do anything
+    /*
     if (this.page >= this.count) {
       eventScroll.target.disabled = true;
-    }
+    }*/
   }
 
   getAthleteInfo(athleteId: number) {
