@@ -31,7 +31,7 @@ export class ActivitiesPage {
   ionViewWillEnter() {
     this.activities = [];
     this.page = 0;
-    this.pageSize = 5;
+    this.pageSize = 15;
     this.count = 1000;
     // This is not working, infiniteScroll won't work until the component is reinstanciated
     // this.infiniteScroll.disabled = false;
@@ -43,7 +43,7 @@ export class ActivitiesPage {
   }
 
   getAthleteActivities(eventScroll?) {
-    this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'), { skip: this.page, take: 5})
+    this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'), { skip: this.page, take: this.pageSize })
       .pipe(first()).subscribe(
         activities => {
           this.activities = this.activities.concat(activities);
