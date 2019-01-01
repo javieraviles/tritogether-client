@@ -21,6 +21,10 @@ export class CoachService {
         return this.http.get<Athlete[]>(`${config.apiUrl}/coaches/${coachId}/athletes`);
     }
 
+    createCoach(coach: Coach) {
+        return this.http.post<Coach>(`${config.apiUrl}/coaches`, coach);
+    }
+
     updateCoach(coachId: number, coach: Coach) {
         return this.http.put<Coach>(`${config.apiUrl}/coaches/${coachId}`, coach);
     }

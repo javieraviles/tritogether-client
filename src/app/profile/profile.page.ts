@@ -20,7 +20,6 @@ export class ProfilePage implements OnInit {
   isUserCoach: Boolean = false;
   loading = false;
   submitted = false;
-  error = '';
   editMode: Boolean = false;
 
   constructor( private router: Router,
@@ -69,7 +68,6 @@ export class ProfilePage implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.error = '';
 
     // stop here if form is invalid
     if (this.userForm.invalid) {
@@ -119,17 +117,17 @@ export class ProfilePage implements OnInit {
   async onSubmitSuccess() {
     await this.refreshToken();
     await this.resetProfile();
-    this.presentToast();
+    this.presentToast('Your profile has been updated.');
   }
 
   onSubmitError(error: any) {
-    this.error = error;
+    this.presentToast(error);
     this.loading = false;
   }
 
-  async presentToast() {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
-      message: 'Your profile has been updated.',
+      message: message,
       duration: 2000
     });
     toast.present();

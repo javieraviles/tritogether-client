@@ -17,6 +17,10 @@ export class AthleteService {
         return this.http.get<Athlete>(`${config.apiUrl}/athletes/${athleteId}`);
     }
 
+    createAthlete(athlete: Athlete) {
+        return this.http.post<Athlete>(`${config.apiUrl}/athletes`, athlete);
+    }
+
     updateAthlete(athleteId: number, athlete: Athlete) {
         return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}`, athlete);
     }

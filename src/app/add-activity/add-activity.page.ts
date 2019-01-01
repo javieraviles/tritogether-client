@@ -17,7 +17,6 @@ export class AddActivityPage implements OnInit {
   disciplines: Discipline[];
   loading: Boolean = false;
   submitted: Boolean = false;
-  error = '';
   maxDatePicker: string = null;
   editMode: Boolean = true;
   activityId: number = null;
@@ -70,7 +69,7 @@ export class AddActivityPage implements OnInit {
                 });
               },
               error => {
-                this.error = error;
+                this.presentToast(error);
               });
     } else {
       this.editMode = true;
@@ -113,7 +112,6 @@ export class AddActivityPage implements OnInit {
 
   onSubmit() {
       this.submitted = true;
-      this.error = '';
 
       // stop here if form is invalid
       if (this.activityForm.invalid) {
@@ -157,7 +155,7 @@ export class AddActivityPage implements OnInit {
   }
 
   onSubmitError(error: string) {
-    this.error = error;
+    this.presentToast(error);
     this.loading = false;
   }
 
@@ -178,7 +176,7 @@ export class AddActivityPage implements OnInit {
           this.backToActivities();
         },
         error => {
-          this.error = error;
+          this.presentToast(error);
         });
   }
 

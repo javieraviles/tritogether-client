@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastController, MenuController } from '@ionic/angular';
 import { first } from 'rxjs/operators';
-
 import { AuthenticationService } from '../services/authentication.service';
-
-import { MenuController } from '@ionic/angular';
+import { AthleteService } from '../services/athlete.service';
+import { CoachService } from '../services/coach.service';
 
 @Component({
   selector: 'app-login',
@@ -14,24 +14,35 @@ import { MenuController } from '@ionic/angular';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  loading: Boolean = false;
-  submitted: Boolean = false;
+  loading: Boolean;
+  submitted: Boolean;
+  signupEnabled: Boolean;
+  submitButtonLabel: string;
+  clearButtonLabel: string;
   returnUrl: string;
-  error = '';
 
-  constructor(
-      private formBuilder: FormBuilder,
-      private route: ActivatedRoute,
-      private router: Router,
-      private authenticationService: AuthenticationService,
-      public menuController: MenuController) {}
+  constructor( public toastController: ToastController,
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private athleteService: AthleteService,
+    private coachService: CoachService,
+    public menuController: MenuController) {}
 
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
+          name: [''],
           username: ['', Validators.required],
           password: ['', Validators.required],
           isCoach: [false]
       });
+
+      this.loading = false;
+      this.submitted = false;
+      this.signupEnabled = false;
+      this.submitButtonLabel = 'Log In';
+      this.clearButtonLabel = 'Sign Up';
 
       // reset login status
       this.authenticationService.logout();
@@ -40,20 +51,88 @@ export class LoginComponent implements OnInit {
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
+  swapSignup() {
+      this.signupEnabled = !this.signupEnabled;
+      if (this.signupEnabled) {
+        this.submitButtonLabel = 'Sign Up';
+        this.clearButtonLabel = 'Cancel';
+      } else {
+        this.submitButtonLabel = 'Log In';
+        this.clearButtonLabel = 'Sign Up';
+      }
+  }
+
+  async presentToast( message: string ) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
+  }
+
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
   onSubmit() {
       this.submitted = true;
-      this.error = '';
 
       // stop here if form is invalid
       if (this.loginForm.invalid) {
           return;
       }
 
-      this.loading = true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.isCoach.value)
+      if (this.signupEnabled) {
+
+        if (this.f.name.value === '') {
+            this.loginForm.controls['name'].setErrors({'required': true});
+            return;
+        }
+
+        this.loading = true;
+        if (!Boolean(this.f.isCoach.value)) {
+            this.athleteService.createAthlete(
+                {
+                    'name': this.f.name.value,
+                    'email': this.f.username.value,
+                    'password': this.f.password.value
+                })
+                .pipe(first())
+                .subscribe(
+                    data => {
+                        this.submitted = false;
+                        this.swapSignup();
+                        this.loginForm.reset();
+                        this.presentToast('Athlete created, you can now log in');
+                        this.loading = false;
+                    },
+                    error => {
+                        this.presentToast(error);
+                        this.loading = false;
+                    });
+        } else {
+            this.coachService.createCoach(
+                {
+                    'name': this.f.name.value,
+                    'email': this.f.username.value,
+                    'password': this.f.password.value
+                })
+                .pipe(first())
+                .subscribe(
+                    data => {
+                        this.submitted = false;
+                        this.swapSignup();
+                        this.loginForm.reset();
+                        this.presentToast('Coach created, you can now log in');
+                        this.loading = false;
+                    },
+                    error => {
+                        this.presentToast(error);
+                        this.loading = false;
+                    });
+        }
+      } else {
+        this.loading = true;
+        this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.isCoach.value)
           .pipe(first())
           .subscribe(
               data => {
@@ -61,8 +140,10 @@ export class LoginComponent implements OnInit {
                   this.loading = false;
               },
               error => {
-                  this.error = error;
-                  this.loading = false;
+                this.presentToast(error);
+                this.loading = false;
               });
+      }
+
   }
 }
