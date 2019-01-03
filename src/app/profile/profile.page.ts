@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Athlete, Coach } from '../models';
+import { Athlete, Coach, Notification, NotificationStatus } from '../models';
 import { AthleteService } from '../services/athlete.service';
 import { CoachService } from '../services/coach.service';
 import { AuthenticationService } from '../services/authentication.service';
+import { NotificationService } from '../services/notification.service';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -17,14 +18,18 @@ export class ProfilePage implements OnInit {
 
   userForm: FormGroup;
   currentUser: any = '';
+  user: any = '';
   isUserCoach: Boolean = false;
   loading = false;
   submitted = false;
   editMode: Boolean = false;
+  notifications: Notification[] = [];
+  coaches: Coach[] = null;
 
-  constructor( private router: Router,
+  constructor(private router: Router,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService,
     private authenticationService: AuthenticationService,
     private athleteService: AthleteService,
     private coachService: CoachService) { }
@@ -44,13 +49,18 @@ export class ProfilePage implements OnInit {
   async resetProfile() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
-    this.currentUser = await this.getUserInfo();
+    this.coaches = null;
+    if (!this.isUserCoach && !this.currentUser.user.coach) {
+      this.getAllCoaches();
+    }
+    this.getUserNotifications();
+    this.user = await this.getUserInfo();
     this.editMode = false;
     this.submitted = false;
     this.loading = false;
     this.userForm.patchValue({
-      name: this.currentUser.name,
-      email: this.currentUser.email,
+      name: this.user.name,
+      email: this.user.email,
       password: ''
     });
   }
@@ -63,49 +73,83 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  getAllCoaches() {
+    this.coachService.getAll().pipe(first()).subscribe(
+      coaches => {
+        this.coaches = coaches;
+      },
+      error => {
+        this.presentToast(error);
+      });
+  }
+
+  getUserNotifications() {
+    if (this.isUserCoach) {
+      this.notificationService.getCoachNotifications(+this.currentUser.user.id)
+        .pipe(first())
+        .subscribe(
+          notifications => {
+            this.notifications = notifications;
+          },
+          error => {
+            this.presentToast(error);
+          });
+    } else {
+      this.notificationService.getAthleteNotifications(+this.currentUser.user.id)
+        .pipe(first())
+        .subscribe(
+          notifications => {
+            this.notifications = notifications;
+          },
+          error => {
+            this.presentToast(error);
+          });
+    }
+  }
+
   // convenience getter for easy access to form fields
   get f() { return this.userForm.controls; }
 
-  onSubmit() {
+  profileSubmit(removeCoach: Boolean = false) {
     this.submitted = true;
 
     // stop here if form is invalid
     if (this.userForm.invalid) {
-        return;
+      return;
     }
 
     this.loading = true;
     if (this.isUserCoach) {
       const updatedUser: Coach = {
-        name : this.f.name.value,
+        name: this.f.name.value,
         email: this.f.email.value,
         password: this.f.password.value
       };
 
-      this.coachService.updateCoach( +this.currentUser.id, updatedUser)
-      .pipe(first())
-      .subscribe(
+      this.coachService.updateCoach(+this.currentUser.user.id, updatedUser)
+        .pipe(first())
+        .subscribe(
           data => {
-              this.onSubmitSuccess();
+            this.profileSubmitSuccess();
           },
           error => {
-              this.onSubmitError(error);
+            this.profileSubmitError(error);
           });
     } else {
       const updatedUser: Athlete = {
-        name : this.f.name.value,
+        name: this.f.name.value,
         email: this.f.email.value,
         password: this.f.password.value,
-        coach: this.currentUser.coach
+        coach: removeCoach ? null : this.user.coach
       };
-      this.athleteService.updateAthlete( +this.currentUser.id, updatedUser)
-      .pipe(first())
-      .subscribe(
+      this.athleteService.updateAthlete(+this.currentUser.user.id, updatedUser)
+        .pipe(first())
+        .subscribe(
           data => {
-              this.onSubmitSuccess();
+            this.profileSubmitSuccess();
           },
           error => {
-              this.onSubmitError(error);
+            this.profileSubmitError(error);
           });
     }
   }
@@ -114,15 +158,76 @@ export class ProfilePage implements OnInit {
     return this.authenticationService.login(this.f.email.value, this.f.password.value, this.isUserCoach).toPromise();
   }
 
-  async onSubmitSuccess() {
+  async profileSubmitSuccess() {
     await this.refreshToken();
     await this.resetProfile();
     this.presentToast('Your profile has been updated.');
   }
 
-  onSubmitError(error: any) {
+  profileSubmitError(error: any) {
     this.presentToast(error);
     this.loading = false;
+  }
+
+  // this function will be triggered only by athletes
+  // when clicking here, means they want to send a new notification to a coach
+  requestCoaching(coach: Coach) {
+    this.notificationService.createNotification(this.currentUser.user.id, { coach: coach })
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.getUserNotifications();
+          this.presentToast(`Coaching request sent to ${coach.name}.`);
+        },
+        error => {
+          this.presentToast(`Could not send coaching request to ${coach.name}: ${error}`);
+        });
+  }
+
+  // this function will be triggered only by coaches
+  // when clicking here, means an athlete sent them a coaching notification
+  // which is pending and wants to accept it
+  acceptCoaching(notification: Notification) {
+    notification.status = NotificationStatus.ACCEPTED;
+    this.athleteService.updateAthleteCoach(notification.athlete.id, this.user)
+      .pipe(first())
+      .subscribe(
+        athlete => {
+          this.acceptCoachingNotification(notification);
+          this.presentToast(`You now coach ${notification.athlete.name}`);
+        },
+        error => {
+          this.presentToast(`Could not accept coaching request from ${notification.athlete.name}: ${error}`);
+        });
+  }
+
+  acceptCoachingNotification(notification: Notification) {
+    this.notificationService.updateNotification(notification.athlete.id, notification.id, notification)
+      .pipe(first())
+      .subscribe(
+        updatedNotification => {
+          this.getUserNotifications();
+        },
+        error => {
+          this.presentToast(error);
+        });
+  }
+
+  // this function will be triggered by both athletes and coaches
+  // when clicking here, means an athlete sent a coach a coaching notification
+  // which is pending and wants to reject it
+  rejectCoaching(notification: Notification) {
+    notification.status = NotificationStatus.REJECTED;
+    this.notificationService.updateNotification(notification.athlete.id, notification.id, notification)
+      .pipe(first())
+      .subscribe(
+        updatedNotification => {
+          this.getUserNotifications();
+          this.presentToast(`Coaching request rejected`);
+        },
+        error => {
+          this.presentToast(`Could not reject coaching request: ${error}`);
+        });
   }
 
   async presentToast(message: string) {

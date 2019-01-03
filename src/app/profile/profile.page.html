@@ -11,7 +11,7 @@
       <ion-icon *ngIf="!editMode" slot="icon-only" name="create"></ion-icon>
       <ion-icon *ngIf="editMode" slot="icon-only" name="close"></ion-icon>
     </ion-button>
-    <ion-button [disabled]="loading" (click)="onSubmit()" (keydown)="onSubmit()" *ngIf="editMode">
+    <ion-button [disabled]="loading" (click)="profileSubmit()" (keydown)="profileSubmit()" *ngIf="editMode">
       <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
       <ion-icon slot="icon-only" name="save"></ion-icon>
     </ion-button>
@@ -23,12 +23,13 @@
 </ion-header>
 
 <ion-content padding>
+  
     <ion-list *ngIf="!editMode">
       <ion-item>
-        <ion-label>{{currentUser.name}}</ion-label>
+        <ion-label>{{user.name}}</ion-label>
       </ion-item>
       <ion-item>
-        <ion-label>{{currentUser.email}}</ion-label>
+        <ion-label>{{user.email}}</ion-label>
       </ion-item>
     </ion-list>
 
@@ -59,5 +60,38 @@
         </div>
 
     </form>
+
+    <ion-text color="dark" *ngIf="coaches && !isUserCoach && !notifications.length && !user.coach">
+      <h4>Select a coach</h4>
+    </ion-text>
+    <ion-list *ngIf="coaches && !isUserCoach && !notifications.length && !user.coach">
+      <ion-item *ngFor="let coach of coaches">
+        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-label>{{coach.name}}</ion-label>
+        <ion-button size="small" slot="end" (click)="requestCoaching(coach)">Request</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-text color="dark" *ngIf="notifications.length && !user.coach">
+      <h4>Coaching requests</h4>
+    </ion-text>
+    <ion-list *ngIf="notifications.length && !user.coach">
+      <ion-item *ngFor="let notification of notifications">
+        <ion-icon name="notifications" slot="start"></ion-icon>
+        <ion-label *ngIf="!isUserCoach">{{notification.coach.name}}</ion-label>
+        <ion-button *ngIf="!isUserCoach" size="small" slot="end" (click)="rejectCoaching(notification)">Cancel</ion-button>
+        <ion-label *ngIf="isUserCoach">{{notification.athlete.name}}</ion-label>
+        <ion-button *ngIf="isUserCoach" size="small" slot="end" (click)="rejectCoaching(notification)">Reject</ion-button>
+        <ion-button *ngIf="isUserCoach" size="small" slot="end" (click)="acceptCoaching(notification)">Accept</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-text color="dark" *ngIf="user.coach">
+      <h5>Your coach: {{user.coach.name}}</h5>
+    </ion-text>
+    <ion-button *ngIf="user.coach && editMode" fill="clear" expand="block" (click)="profileSubmit(true)">
+      I don't want this coach anymore
+    </ion-button>
+
 </ion-content>
   
