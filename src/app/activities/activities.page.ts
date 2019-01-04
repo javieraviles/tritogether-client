@@ -22,6 +22,7 @@ export class ActivitiesPage {
   page: number;
   pageSize: number;
   count: number;
+  hasCoach: Boolean = true;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -29,6 +30,7 @@ export class ActivitiesPage {
     private athleteService: AthleteService) {}
 
   ionViewWillEnter() {
+    this.hasCoach = true;
     this.activities = [];
     this.page = 0;
     this.pageSize = 15;
@@ -84,6 +86,7 @@ export class ActivitiesPage {
     this.athleteService.getAthlete(athleteId).pipe(first()).subscribe(
       athlete => {
         this.athlete = athlete;
+        this.hasCoach = athlete.coach ? true : false;
         this.toolbarTitle = this.athlete.name;
       },
       error => {

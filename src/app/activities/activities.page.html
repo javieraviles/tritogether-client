@@ -16,6 +16,16 @@
 
 <ion-content padding>
 
+  <ion-card *ngIf="!hasCoach">
+    <ion-card-header>
+      <ion-card-title>Find a new coach</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      Looks like you don't have a coach at the moment; you can go to <a routerLink="/profile">your profile</a> and find a new one!
+    </ion-card-content>
+  </ion-card>
+
   <ion-list *ngIf="activities">
     <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true">
       <ion-icon [name]="getActivityIcon(activity.discipline.name)" slot="start"></ion-icon>
