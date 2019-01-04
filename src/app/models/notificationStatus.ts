@@ -1,5 +1,5 @@
 export enum NotificationStatus {
     PENDING = 'PENDING',
-    ACCEPTED = 'ACCEPTED',
+    APPROVED = 'APPROVED',
     REJECTED = 'REJECTED'
 }

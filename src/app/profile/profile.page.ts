@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Athlete, Coach, Notification, NotificationStatus } from '../models';
@@ -27,6 +27,7 @@ export class ProfilePage implements OnInit {
   coaches: Coach[] = null;
 
   constructor(private router: Router,
+    public alertController: AlertController,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     private notificationService: NotificationService,
@@ -50,6 +51,7 @@ export class ProfilePage implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.coaches = null;
+    // if it is an athlete and has no coach, get all
     if (!this.isUserCoach && !this.currentUser.user.coach) {
       this.getAllCoaches();
     }
@@ -184,24 +186,48 @@ export class ProfilePage implements OnInit {
         });
   }
 
+  async confirmCoachingAlert(notification) {
+    const alert = await this.alertController.create({
+      header: 'Coaching request',
+      message: `${notification.athlete.name} sent you a coaching request`,
+      buttons: [
+        {
+          text: 'Deny',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            this.rejectCoaching(notification);
+          }
+        }, {
+          text: 'Approve',
+          handler: () => {
+            this.approveCoaching(notification);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   // this function will be triggered only by coaches
   // when clicking here, means an athlete sent them a coaching notification
-  // which is pending and wants to accept it
-  acceptCoaching(notification: Notification) {
-    notification.status = NotificationStatus.ACCEPTED;
+  // which is pending and wants to approve it
+  approveCoaching(notification: Notification) {
+    notification.status = NotificationStatus.APPROVED;
     this.athleteService.updateAthleteCoach(notification.athlete.id, this.user)
       .pipe(first())
       .subscribe(
         athlete => {
-          this.acceptCoachingNotification(notification);
+          this.approveCoachingNotification(notification);
           this.presentToast(`You now coach ${notification.athlete.name}`);
         },
         error => {
-          this.presentToast(`Could not accept coaching request from ${notification.athlete.name}: ${error}`);
+          this.presentToast(`Could not approve coaching request from ${notification.athlete.name}: ${error}`);
         });
   }
 
-  acceptCoachingNotification(notification: Notification) {
+  approveCoachingNotification(notification: Notification) {
     this.notificationService.updateNotification(notification.athlete.id, notification.id, notification)
       .pipe(first())
       .subscribe(
