@@ -23,7 +23,7 @@ export class AthleteService {
         return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}`, athlete);
     }
 
-    updateAthleteCoach(athleteId: number, coach: Coach) {
+    updateAthleteCoach(athleteId: number, coach?: Coach) {
         return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}/coach`, coach);
     }
 }

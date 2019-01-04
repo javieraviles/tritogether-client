@@ -25,6 +25,7 @@ export class ProfilePage implements OnInit {
   editMode: Boolean = false;
   notifications: Notification[] = [];
   coaches: Coach[] = null;
+  athletes: Athlete[] = null;
 
   constructor(private router: Router,
     public alertController: AlertController,
@@ -51,9 +52,13 @@ export class ProfilePage implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.coaches = null;
+    this.athletes = null;
     // if it is an athlete and has no coach, get all
     if (!this.isUserCoach && !this.currentUser.user.coach) {
       this.getAllCoaches();
+    }
+    if (this.isUserCoach) {
+      this.getCoachAthletes();
     }
     this.getUserNotifications();
     this.user = await this.getUserInfo();
@@ -82,6 +87,15 @@ export class ProfilePage implements OnInit {
       },
       error => {
         this.presentToast(error);
+      });
+  }
+
+  getCoachAthletes() {
+    this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
+      athletes => {
+        this.athletes = athletes;
+      },
+      error => {
       });
   }
 
@@ -219,12 +233,56 @@ export class ProfilePage implements OnInit {
       .pipe(first())
       .subscribe(
         athlete => {
+          this.getCoachAthletes();
           this.approveCoachingNotification(notification);
           this.presentToast(`You now coach ${notification.athlete.name}`);
         },
         error => {
           this.presentToast(`Could not approve coaching request from ${notification.athlete.name}: ${error}`);
         });
+  }
+
+  // this function will be triggered only by coaches
+  // when entering here, means a coach doesn't want to
+  // coach this athlete anymore
+  async stopCoaching(athlete: Athlete) {
+    this.athleteService.updateAthleteCoach(athlete.id)
+      .pipe(first())
+      .subscribe(
+        updatedAthlete => {
+          this.getCoachAthletes();
+          this.presentToast(`You are no longer coaching ${athlete.name}`);
+        },
+        error => {
+          this.presentToast(`Could not stop coaching ${athlete.name}: ${error}`);
+        });
+  }
+
+  // this function will be triggered only by coaches
+  // when entering here, means a coach clicked on stop
+  // coaching an athlete, which needs a confirmation
+  async confirmStopCoaching(athlete: Athlete) {
+    const alert = await this.alertController.create({
+      header: 'Stop coaching',
+      message: `Please confirm you want to stop coaching ${athlete.name}`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            // do nothing
+          }
+        }, {
+          text: 'Confirm',
+          handler: () => {
+            this.stopCoaching(athlete);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   approveCoachingNotification(notification: Notification) {

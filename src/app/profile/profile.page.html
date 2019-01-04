@@ -28,7 +28,7 @@
       
         <ion-item>
           <ion-label>Name</ion-label>
-          <ion-input type="text" min="5" max="80" formControlName="name" [readonly]="!editMode" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" ></ion-input>
+          <ion-input type="text"  placeholder="Enter your name" minlength="5" maxlength="80" formControlName="name" [readonly]="!editMode" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="editMode && submitted && f.name.errors">
           <div *ngIf="f.name.errors.required">Name is required</div>
@@ -36,7 +36,7 @@
 
         <ion-item>
           <ion-label>Email</ion-label>
-          <ion-input type="email" min="10" max="100" formControlName="email" [readonly]="!editMode" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" ></ion-input>
+          <ion-input type="email"  placeholder="Enter your email" minlength="10" maxlength="100" formControlName="email" [readonly]="!editMode" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="editMode && submitted && f.email.errors">
           <div *ngIf="f.email.errors.required">Email is required</div>
@@ -44,7 +44,7 @@
 
         <ion-item *ngIf="editMode">
           <ion-label>Password</ion-label>
-          <ion-input type="password" min="8" max="20" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" ></ion-input>
+          <ion-input type="password" placeholder="Enter your password" minlength="8" maxlength="20" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" ></ion-input>
         </ion-item>
         <div *ngIf="editMode && submitted && f.password.errors">
           <div *ngIf="f.password.errors.required">Password is required</div>
@@ -85,6 +85,19 @@
         <ion-button *ngIf="!isUserCoach" fill="outline" size="small" slot="end" (click)="rejectCoaching(notification)">Cancel</ion-button>
         <ion-label *ngIf="isUserCoach">{{notification.athlete.name}}</ion-label>
         <ion-button *ngIf="isUserCoach" fill="outline" size="small" slot="end" (click)="confirmCoachingAlert(notification)">Respond</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="athletes && athletes.length > 0 && isUserCoach">
+      <ion-item-divider>
+        <ion-label>
+          Your athletes
+        </ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let athlete of athletes">
+        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-label>{{athlete.name}}</ion-label>
+        <ion-button size="small" fill="outline" slot="end" (click)="confirmStopCoaching(athlete)">Stop coaching</ion-button>
       </ion-item>
     </ion-list>
 

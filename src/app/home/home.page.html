@@ -2,8 +2,9 @@
   <ion-toolbar color="primary">
     <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary">
-      <ion-button routerLink="/profile">
+      <ion-button id="profile-btn" routerLink="/profile">
         <ion-icon slot="icon-only" name="contact"></ion-icon>
+        <ion-badge *ngIf="isUserCoach && pendingNotifications > 0" id="profile-badge">{{pendingNotifications}}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
