@@ -32,7 +32,7 @@
           <ion-label>{{activity?.discipline.name | titlecase}}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label text-wrap>{{activity?.description}}</ion-label>
+          <ion-label style="white-space: pre-line !important;" text-wrap>{{activity?.description}}</ion-label>
         </ion-item>
       </ion-list>
 
@@ -52,7 +52,7 @@
 
         <ion-item>
           <ion-label position="stacked">Description</ion-label>
-          <ion-textarea placeholder="Enter session notes here..." formControlName="description" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></ion-textarea>
+          <ion-textarea rows="9" placeholder="Enter session notes here..." formControlName="description" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></ion-textarea>
         </ion-item>
         <div *ngIf="submitted && f.description.errors">
           <div *ngIf="f.description.errors.required">Description is required</div>

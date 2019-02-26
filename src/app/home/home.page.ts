@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { CoachService } from '../services/coach.service';
 import { NotificationService } from '../services/notification.service';
 import { Activity, Athlete } from '../models';
@@ -22,9 +23,11 @@ export class HomePage {
 
   constructor(private router: Router,
     private coachService: CoachService,
-    private notificationService: NotificationService) {}
+    private notificationService: NotificationService,
+    public loadingController: LoadingController) {}
 
   ionViewWillEnter() {
+    // TODO restore inputs
     this.pendingNotifications = 0;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
@@ -45,13 +48,22 @@ export class HomePage {
     this.router.navigate(['/activities', { athleteId: athlete.id }]);
   }
 
-  getCoachAthletes() {
-    this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
+  async getCoachAthletes() {
+    const loading = await this.loadingController.create({
+      message: 'Loading athletes...',
+      spinner: 'crescent'
+    });
+    loading.present();
+
+    await this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
       athletes => {
         this.athletes = athletes;
+
+        loading.dismiss();
       },
       error => {
       });
+
   }
 
   getPendingNotifications() {

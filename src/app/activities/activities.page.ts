@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IonInfiniteScroll } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { ActivityService } from '../services/activity.service';
 import { AthleteService } from '../services/athlete.service';
 import { Activity, Athlete } from '../models';
@@ -23,11 +24,13 @@ export class ActivitiesPage {
   pageSize: number;
   count: number;
   hasCoach: Boolean = true;
+  today: String = new Date().toISOString().slice(0, 10);
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private activityService: ActivityService,
-    private athleteService: AthleteService) {}
+    private athleteService: AthleteService,
+    public loadingController: LoadingController) { }
 
   ionViewWillEnter() {
     this.hasCoach = true;
@@ -44,14 +47,22 @@ export class ActivitiesPage {
     this.getCountAthleteActivities();
   }
 
-  getAthleteActivities(eventScroll?) {
-    this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'), { skip: this.page, take: this.pageSize })
+  async getAthleteActivities(eventScroll?) {
+    const loading = await this.loadingController.create({
+      message: 'Loading activities...',
+      spinner: 'crescent'
+    });
+    loading.present();
+
+    this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'),
+      { skip: this.page, take: this.pageSize })
       .pipe(first()).subscribe(
-        activities => {
+        async activities => {
           this.activities = this.activities.concat(activities);
           if (eventScroll) {
             eventScroll.target.complete();
           }
+          loading.dismiss();
         },
         error => {
         });

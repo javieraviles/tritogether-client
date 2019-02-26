@@ -27,7 +27,7 @@
   </ion-card>
 
   <ion-list *ngIf="activities">
-    <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true">
+    <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true" [color]="today == activity.date.slice(0, 10) ? 'light' : ''">
       <ion-icon [name]="getActivityIcon(activity.discipline.name)" slot="start"></ion-icon>
       <ion-label>{{activity.description}}</ion-label>
       <ion-note slot="end">{{activity.date | date:'d LLL'}}</ion-note>

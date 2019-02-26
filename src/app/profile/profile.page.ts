@@ -233,7 +233,6 @@ export class ProfilePage implements OnInit {
       .pipe(first())
       .subscribe(
         athlete => {
-          this.getCoachAthletes();
           this.approveCoachingNotification(notification);
           this.presentToast(`You now coach ${notification.athlete.name}`);
         },
@@ -291,6 +290,7 @@ export class ProfilePage implements OnInit {
       .subscribe(
         updatedNotification => {
           this.getUserNotifications();
+          this.getCoachAthletes();
         },
         error => {
           this.presentToast(error);
