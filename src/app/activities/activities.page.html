@@ -26,17 +26,19 @@
     </ion-card-content>
   </ion-card>
 
+  <ion-calendar [(ngModel)]="calendarDate"
+              (change)="onChange($event)"
+              [type]="calendarType"
+              [options]="calendarOptions"
+              [format]="'DD-MM-YYYY'">
+  </ion-calendar>
+
   <ion-list *ngIf="activities">
-    <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true" [color]="today == activity.date.slice(0, 10) ? 'light' : ''">
+    <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true">
       <ion-icon [name]="getActivityIcon(activity.discipline.name)" slot="start"></ion-icon>
       <ion-label>{{activity.description}}</ion-label>
-      <ion-note slot="end">{{activity.date | date:'d LLL'}}</ion-note>
     </ion-item>
   </ion-list>
-
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreActivities($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more activities..."></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isUserCoach">
     <ion-fab-button (click)="addActivity()">

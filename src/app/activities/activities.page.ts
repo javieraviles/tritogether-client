@@ -1,11 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IonInfiniteScroll } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { ActivityService } from '../services/activity.service';
 import { AthleteService } from '../services/athlete.service';
 import { Activity, Athlete } from '../models';
 import { first } from 'rxjs/operators';
+import { CalendarComponentOptions, DayConfig } from 'ion2-calendar';
 
 @Component({
   selector: 'app-activities',
@@ -13,18 +13,23 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./activities.page.scss'],
 })
 export class ActivitiesPage {
-  // @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-
   currentUser: any = null;
   activities: Activity[] = null;
   isUserCoach: Boolean = false;
   toolbarTitle: string;
   athlete: Athlete = null;
-  page: number;
-  pageSize: number;
-  count: number;
   hasCoach: Boolean = true;
-  today: String = new Date().toISOString().slice(0, 10);
+  selectedDate: string = new Date().toISOString().slice(0, 10);
+  calendarDate: string;
+  calendarType: 'string'; // 'string' | 'js-date' | 'moment' | 'time' | 'object'
+  /*_daysConfig: DayConfig[] = [{
+    date: new Date(this.selectedDate),
+    subTitle: `prueba`
+  }];*/
+  calendarOptions: CalendarComponentOptions = {
+    weekStart: 1
+    // daysConfig: this._daysConfig
+  };
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -32,19 +37,18 @@ export class ActivitiesPage {
     private athleteService: AthleteService,
     public loadingController: LoadingController) { }
 
+  onChange($event) {
+    this.selectedDate = $event.format('MM-DD-YYYY');
+    this.getAthleteActivities();
+  }
+
   ionViewWillEnter() {
     this.hasCoach = true;
     this.activities = [];
-    this.page = 0;
-    this.pageSize = 15;
-    this.count = 1000;
-    // This is not working, infiniteScroll won't work until the component is reinstanciated
-    // this.infiniteScroll.disabled = false;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.getAthleteInfo(+this.route.snapshot.paramMap.get('athleteId'));
     this.getAthleteActivities();
-    this.getCountAthleteActivities();
   }
 
   async getAthleteActivities(eventScroll?) {
@@ -55,42 +59,15 @@ export class ActivitiesPage {
     loading.present();
 
     this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'),
-      { skip: this.page, take: this.pageSize })
+      { date: this.selectedDate })
       .pipe(first()).subscribe(
         async activities => {
-          this.activities = this.activities.concat(activities);
-          if (eventScroll) {
-            eventScroll.target.complete();
-          }
+          this.activities = activities;
+
           loading.dismiss();
         },
         error => {
         });
-  }
-
-  getCountAthleteActivities() {
-    this.activityService.getCountAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'))
-      .pipe(first()).subscribe(
-        count => {
-          this.count = count;
-        },
-        error => {
-        });
-  }
-
-  loadMoreActivities(eventScroll) {
-    if (this.page < this.count) {
-      this.page = this.page + this.pageSize;
-      this.getAthleteActivities(eventScroll);
-    } else {
-      eventScroll.target.complete();
-    }
-
-    // if disabled, cant get enabled back so by now will leave it enabled and just not do anything
-    /*
-    if (this.page >= this.count) {
-      eventScroll.target.disabled = true;
-    }*/
   }
 
   getAthleteInfo(athleteId: number) {
