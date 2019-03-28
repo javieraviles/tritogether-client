@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController, AlertController } from '@ionic/angular';
+import { LoadingController, ToastController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Athlete, Coach, Notification, NotificationStatus } from '../models';
@@ -34,7 +34,8 @@ export class ProfilePage implements OnInit {
     private notificationService: NotificationService,
     private authenticationService: AuthenticationService,
     private athleteService: AthleteService,
-    private coachService: CoachService) { }
+    private coachService: CoachService,
+    public loadingController: LoadingController) { }
 
   ngOnInit() {
     this.userForm = this.formBuilder.group({
@@ -49,6 +50,11 @@ export class ProfilePage implements OnInit {
   }
 
   async resetProfile() {
+    const loading = await this.loadingController.create({
+      message: 'Loading profile...',
+      spinner: 'crescent'
+    });
+    loading.present();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.coaches = null;
@@ -70,6 +76,7 @@ export class ProfilePage implements OnInit {
       email: this.user.email,
       password: ''
     });
+    loading.dismiss();
   }
 
   getUserInfo() {
@@ -96,6 +103,7 @@ export class ProfilePage implements OnInit {
         this.athletes = athletes;
       },
       error => {
+        this.presentToast(error);
       });
   }
 
@@ -125,6 +133,11 @@ export class ProfilePage implements OnInit {
 
   // convenience getter for easy access to form fields
   get f() { return this.userForm.controls; }
+
+  switchEditMode() {
+    this.editMode = !this.editMode;
+    this.userForm.controls['password'].setValue('');
+  }
 
   profileSubmit(removeCoach: Boolean = false) {
     this.submitted = true;
@@ -245,15 +258,18 @@ export class ProfilePage implements OnInit {
   // when entering here, means a coach doesn't want to
   // coach this athlete anymore
   async stopCoaching(athlete: Athlete) {
+    this.loading = true;
     this.athleteService.updateAthleteCoach(athlete.id)
       .pipe(first())
       .subscribe(
         updatedAthlete => {
           this.getCoachAthletes();
           this.presentToast(`You are no longer coaching ${athlete.name}`);
+          this.loading = false;
         },
         error => {
           this.presentToast(`Could not stop coaching ${athlete.name}: ${error}`);
+          this.loading = false;
         });
   }
 

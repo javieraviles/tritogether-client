@@ -7,11 +7,11 @@
   </ion-buttons>
   <ion-title>Profile</ion-title>
   <ion-buttons slot="primary">
-    <ion-button (click)="editMode = !editMode" *ngIf="!loading">
+    <ion-button (click)="switchEditMode()" *ngIf="!loading">
       <ion-icon *ngIf="!editMode" slot="icon-only" name="create"></ion-icon>
       <ion-icon *ngIf="editMode" slot="icon-only" name="close"></ion-icon>
     </ion-button>
-    <ion-button [disabled]="loading" (click)="profileSubmit()" (keydown)="profileSubmit()" *ngIf="editMode">
+    <ion-button [disabled]="loading || userForm.invalid" (click)="profileSubmit()" *ngIf="editMode">
       <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
       <ion-icon slot="icon-only" name="save"></ion-icon>
     </ion-button>
@@ -28,32 +28,23 @@
       
         <ion-item>
           <ion-label>Name</ion-label>
-          <ion-input type="text"  placeholder="Enter your name" minlength="5" maxlength="80" formControlName="name" [readonly]="!editMode" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" ></ion-input>
+          <ion-input type="text"  placeholder="Enter your name" minlength="5" maxlength="80" formControlName="name" [readonly]="!editMode"></ion-input>
         </ion-item>
-        <div *ngIf="editMode && submitted && f.name.errors">
-          <div *ngIf="f.name.errors.required">Name is required</div>
-        </div>
 
         <ion-item>
           <ion-label>Email</ion-label>
-          <ion-input type="email"  placeholder="Enter your email" minlength="10" maxlength="100" formControlName="email" [readonly]="!editMode" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" ></ion-input>
+          <ion-input type="email"  placeholder="Enter your email" minlength="10" maxlength="100" formControlName="email" [readonly]="!editMode"></ion-input>
         </ion-item>
-        <div *ngIf="editMode && submitted && f.email.errors">
-          <div *ngIf="f.email.errors.required">Email is required</div>
-        </div>
 
         <ion-item *ngIf="editMode">
           <ion-label>Password</ion-label>
-          <ion-input type="password" placeholder="Enter your password" minlength="8" maxlength="20" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" ></ion-input>
+          <ion-input type="password" placeholder="Enter your password" minlength="8" maxlength="20" formControlName="password"></ion-input>
         </ion-item>
-        <div *ngIf="editMode && submitted && f.password.errors">
-          <div *ngIf="f.password.errors.required">Password is required</div>
-        </div>
 
         <ion-item *ngIf="user.coach">
           <ion-label>Coach</ion-label>
           <ion-input type="text" [value]="user.coach.name" readonly></ion-input>
-          <ion-button *ngIf="user.coach && editMode" slot="end" size="small" fill="outline" (click)="profileSubmit(true)">
+          <ion-button [disabled]="loading || userForm.invalid" *ngIf="user.coach && editMode" slot="end" size="small" fill="outline" (click)="profileSubmit(true)">
             Stop coaching
           </ion-button>
         </ion-item>
@@ -97,7 +88,7 @@
       <ion-item *ngFor="let athlete of athletes">
         <ion-icon name="person" slot="start"></ion-icon>
         <ion-label>{{athlete.name}}</ion-label>
-        <ion-button size="small" fill="outline" slot="end" (click)="confirmStopCoaching(athlete)">Stop coaching</ion-button>
+        <ion-button *ngIf="editMode" [disabled]="loading || userForm.invalid" size="small" fill="outline" slot="end" (click)="confirmStopCoaching(athlete)">Stop coaching</ion-button>
       </ion-item>
     </ion-list>
 

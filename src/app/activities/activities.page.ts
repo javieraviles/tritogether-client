@@ -27,7 +27,8 @@ export class ActivitiesPage {
     subTitle: `prueba`
   }];*/
   calendarOptions: CalendarComponentOptions = {
-    weekStart: 1
+    weekStart: 1,
+    from: new Date('2019-01-01')
     // daysConfig: this._daysConfig
   };
 
@@ -44,7 +45,6 @@ export class ActivitiesPage {
 
   ionViewWillEnter() {
     this.hasCoach = true;
-    this.activities = [];
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.getAthleteInfo(+this.route.snapshot.paramMap.get('athleteId'));
@@ -82,7 +82,7 @@ export class ActivitiesPage {
   }
 
   addActivity() {
-    this.router.navigate(['/addActivity', { athleteId: this.athlete.id }]);
+    this.router.navigate(['/addActivity', { athleteId: this.athlete.id, selectedDate: this.selectedDate }]);
   }
 
   showActivity(activity: Activity) {

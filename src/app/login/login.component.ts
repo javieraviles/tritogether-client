@@ -32,11 +32,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
-          name: [''],
+          name: ['', Validators.required],
           username: ['', Validators.required],
           password: ['', Validators.required],
           isCoach: [false]
       });
+      // at first, only login is shown, so name won't be required until signup is enabled
+      this.loginForm.controls['name'].disable();
 
       this.loading = false;
       this.submitted = false;
@@ -56,9 +58,11 @@ export class LoginComponent implements OnInit {
       if (this.signupEnabled) {
         this.submitButtonLabel = 'Sign Up';
         this.clearButtonLabel = 'Cancel';
+        this.loginForm.controls['name'].enable();
       } else {
         this.submitButtonLabel = 'Log In';
         this.clearButtonLabel = 'Sign Up';
+        this.loginForm.controls['name'].disable();
       }
   }
 
@@ -82,11 +86,6 @@ export class LoginComponent implements OnInit {
       }
 
       if (this.signupEnabled) {
-
-        if (this.f.name.value === '') {
-            this.loginForm.controls['name'].setErrors({'required': true});
-            return;
-        }
 
         this.loading = true;
         if (!Boolean(this.f.isCoach.value)) {

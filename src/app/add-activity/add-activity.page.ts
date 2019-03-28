@@ -21,6 +21,7 @@ export class AddActivityPage implements OnInit {
   editMode: Boolean = true;
   activityId: number = null;
   athleteId: number = null;
+  selectedDate: Date = null;
   activity: Activity = null;
   currentUser: any = null;
   isUserCoach: Boolean = false;
@@ -49,6 +50,9 @@ export class AddActivityPage implements OnInit {
 
     this.activityId = +this.route.snapshot.paramMap.get('activityId');
     this.athleteId = +this.route.snapshot.paramMap.get('athleteId');
+    this.selectedDate = new Date(this.route.snapshot.paramMap.get('selectedDate'));
+    // this line is to avoid different timezones to change the chosen day
+    this.selectedDate.setUTCDate(this.selectedDate.getDate());
 
     this.activityForm.reset();
     const today = new Date();
@@ -75,7 +79,7 @@ export class AddActivityPage implements OnInit {
       this.editMode = true;
       this.activityForm.patchValue({
         discipline: this.disciplines[0],
-        date: new Date().toISOString()
+        date: this.selectedDate.toISOString()
       });
     }
 

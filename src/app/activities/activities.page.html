@@ -40,6 +40,11 @@
     </ion-item>
   </ion-list>
 
+  <ion-item *ngIf="activities && activities.length == 0">
+    <ion-icon name="happy" slot="start"></ion-icon>
+    <ion-label>No training today!</ion-label>
+  </ion-item>
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isUserCoach">
     <ion-fab-button (click)="addActivity()">
       <ion-icon name="add"></ion-icon>
