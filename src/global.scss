@@ -10,3 +10,89 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
+@import url(http://weloveiconfonts.com/api/?family=maki);
+
+/* maki */
+[class*="maki-"]:before {
+    font-family: 'maki', sans-serif;
+    color: #9e9e9e;
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+button.swimming, button.cycling, button.running, button.other {
+    p {
+        margin-top: 10px !important;
+    }
+    small {
+        position: relative !important;
+        bottom: 0 !important;
+        height: 100%;
+        font-size: 1px;
+        letter-spacing: -1px;
+        color: transparent !important;
+
+        &:after {
+            color: green;
+            font-size: 15px;
+            font-family: 'maki', sans-serif;
+        }
+    }
+}
+
+button.swimming {
+    small {
+        &:after {
+            content: "\e838";
+        }
+    }
+}
+
+button.cycling {
+    small {
+        &:after {
+            content: "\e80a";
+        }
+    }
+}
+
+button.running {
+    small {
+        &:after {
+            content: "\e82a";
+        }
+    }
+}
+
+button.swimming.cycling {
+    small {
+        &:after {
+            content: "\e838 \e80a";
+        }
+    }
+}
+
+button.cycling.running {
+    small {
+        &:after {
+            content: "\e80a \e82a";
+        }
+    }
+}
+
+button.swimming.running {
+    small {
+        &:after {
+            content: "\e838 \e82a";
+        }
+    }
+}
+
+button.swimming.cycling.running {
+    small {
+        &:after {
+            content: "\e838 \e80a \e82a";
+        }
+    }
+}

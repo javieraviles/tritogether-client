@@ -14,22 +14,20 @@ import { CalendarComponentOptions, DayConfig } from 'ion2-calendar';
 })
 export class ActivitiesPage {
   currentUser: any = null;
-  activities: Activity[] = null;
+  monthActivities: Activity[] = null;
+  todayActivities: Activity[] = null;
   isUserCoach: Boolean = false;
   toolbarTitle: string;
   athlete: Athlete = null;
   hasCoach: Boolean = true;
   selectedDate: string = new Date().toISOString().slice(0, 10);
+  selectedMonth: string = this.selectedDate.slice(5, 7);
   calendarDate: string;
-  calendarType: 'string'; // 'string' | 'js-date' | 'moment' | 'time' | 'object'
-  /*_daysConfig: DayConfig[] = [{
-    date: new Date(this.selectedDate),
-    subTitle: `prueba`
-  }];*/
+  calendarType: 'moment'; // 'string' | 'js-date' | 'moment' | 'time' | 'object'
+  calendarDaysConfig: DayConfig[] = [];
   calendarOptions: CalendarComponentOptions = {
     weekStart: 1,
     from: new Date('2019-01-01')
-    // daysConfig: this._daysConfig
   };
 
   constructor(private router: Router,
@@ -38,9 +36,21 @@ export class ActivitiesPage {
     private athleteService: AthleteService,
     public loadingController: LoadingController) { }
 
-  onChange($event) {
-    this.selectedDate = $event.format('MM-DD-YYYY');
-    this.getAthleteActivities();
+  async onDayChange($event) {
+    this.selectedDate = $event.format('YYYY-MM-DD');
+    // only refetch month activities if the month changed
+    if (this.selectedMonth !== $event.format('MM')) {
+      this.selectedMonth = $event.format('MM');
+      this.getAthleteActivities(this.selectedDate);
+    } else {
+      this.getTodayActivitiesFromMonthActivities();
+    }
+  }
+
+  async onMonthChange($event) {
+    this.selectedDate = $event.newMonth.string;
+    this.selectedMonth = this.selectedDate.slice(5, 7);
+    this.getAthleteActivities(this.selectedDate);
   }
 
   ionViewWillEnter() {
@@ -48,10 +58,10 @@ export class ActivitiesPage {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
     this.getAthleteInfo(+this.route.snapshot.paramMap.get('athleteId'));
-    this.getAthleteActivities();
+    this.getAthleteActivities(this.selectedDate);
   }
 
-  async getAthleteActivities(eventScroll?) {
+  async getAthleteActivities(selectedDate: string) {
     const loading = await this.loadingController.create({
       message: 'Loading activities...',
       spinner: 'crescent'
@@ -59,10 +69,41 @@ export class ActivitiesPage {
     loading.present();
 
     this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'),
-      { date: this.selectedDate })
+      { month: this.selectedMonth })
       .pipe(first()).subscribe(
         async activities => {
-          this.activities = activities;
+          this.monthActivities = activities;
+
+          let i = 0;
+          while (i < this.monthActivities.length) {
+            let j = i;
+            let dayCss: string = this.monthActivities[i].discipline.name;
+            // if same date as nexts activities, merge them if different
+            while (this.monthActivities[j + 1] && this.monthActivities[j].date === this.monthActivities[j + 1].date) {
+              if (this.monthActivities[j].discipline.name !== this.monthActivities[j + 1].discipline.name) {
+                dayCss = dayCss.concat(` ${this.monthActivities[j + 1].discipline.name}`);
+                j++;
+              }
+            }
+            i = j;
+            this.calendarDaysConfig.push({
+              date: new Date(this.monthActivities[i].date),
+              subTitle: `*`,
+              cssClass: `${dayCss}`
+            });
+
+            i++;
+          }
+          this.getTodayActivitiesFromMonthActivities();
+
+          this.calendarOptions = {
+            weekStart: 1,
+            from: new Date('2019-01-01'),
+            daysConfig: this.calendarDaysConfig
+          };
+
+          // refresh selectedDate marker in calendar
+          this.calendarDate = selectedDate;
 
           loading.dismiss();
         },
@@ -89,16 +130,25 @@ export class ActivitiesPage {
     this.router.navigate(['/addActivity', { activityId: activity.id,  athleteId: this.athlete.id }]);
   }
 
+  getTodayActivitiesFromMonthActivities() {
+    this.todayActivities = [];
+    this.monthActivities.forEach( (activity) => {
+      if (activity.date.toString() === this.selectedDate) {
+        this.todayActivities.push(activity);
+      }
+    });
+  }
+
   getActivityIcon(discipline: string) {
     switch (discipline) {
       case 'swimming':
-        return 'water';
+        return 'swimming';
       case 'cycling':
         return 'bicycle';
       case 'running':
-        return 'walk';
-      case 'fitness':
-        return 'fitness';
+        return 'pitch';
+      case 'other':
+        return 'fire-station';
     }
   }
 

@@ -27,22 +27,21 @@
   </ion-card>
 
   <ion-calendar [(ngModel)]="calendarDate"
-              (change)="onChange($event)"
+              (change)="onDayChange($event)"
+              (monthChange)="onMonthChange($event)"
               [type]="calendarType"
               [options]="calendarOptions"
               [format]="'DD-MM-YYYY'">
   </ion-calendar>
 
-  <ion-list *ngIf="activities">
-    <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)" detail="true">
-      <ion-icon [name]="getActivityIcon(activity.discipline.name)" slot="start"></ion-icon>
-      <ion-label>{{activity.description}}</ion-label>
+  <ion-list *ngIf="todayActivities">
+    <ion-item *ngFor="let activity of todayActivities" (click)="showActivity(activity)" detail="true">
+      <ion-label><span class="maki-{{getActivityIcon(activity.discipline.name)}}"></span> {{activity.description}}</ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-item *ngIf="activities && activities.length == 0">
-    <ion-icon name="happy" slot="start"></ion-icon>
-    <ion-label>No training today!</ion-label>
+  <ion-item *ngIf="todayActivities && todayActivities.length == 0">
+    <ion-label><span class="maki-lodging"></span>  No training today!</ion-label>
   </ion-item>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isUserCoach">

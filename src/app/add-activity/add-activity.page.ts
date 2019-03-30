@@ -86,7 +86,6 @@ export class AddActivityPage implements OnInit {
   }
 
   initDisciplines() {
-    // TODO get disciplines from DB when API is ready
     this.disciplines = [
       {
         id : 1,
@@ -102,7 +101,7 @@ export class AddActivityPage implements OnInit {
       },
       {
         id : 4,
-        name : 'fitness'
+        name : 'other'
       }
     ];
   }

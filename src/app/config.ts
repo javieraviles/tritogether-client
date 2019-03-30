@@ -3,7 +3,8 @@ export interface IConfig {
 }
 
 const config: IConfig = {
-    apiUrl: 'http://localhost:4000'
+    // apiUrl: 'http://localhost:4000'
+    apiUrl: 'https://tritogether-api.herokuapp.com'
 };
 
 export { config };

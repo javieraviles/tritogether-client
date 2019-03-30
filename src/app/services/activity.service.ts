@@ -21,10 +21,6 @@ export class ActivityService {
         return this.http.get<Activity[]>(`${config.apiUrl}/athletes/${athleteId}/activities`, { params: params });
     }
 
-    getCountAthleteActivities(athleteId: number) {
-        return this.http.get<number>(`${config.apiUrl}/athletes/${athleteId}/activities/count`);
-    }
-
     createActivity(athleteId: number, activity: Activity) {
         return this.http.post<Activity>(`${config.apiUrl}/athletes/${athleteId}/activities`, activity);
     }
