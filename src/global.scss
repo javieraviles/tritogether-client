@@ -50,6 +50,14 @@ button.swimming, button.cycling, button.running, button.other {
     }
 }
 
+button.other {
+    small {
+        &:after {
+            content: "\e817";
+        }
+    }
+}
+
 button.swimming {
     small {
         &:after {

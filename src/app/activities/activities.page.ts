@@ -73,6 +73,7 @@ export class ActivitiesPage {
       .pipe(first()).subscribe(
         async activities => {
           this.monthActivities = activities;
+          this.calendarDaysConfig = [];
 
           let i = 0;
           while (i < this.monthActivities.length) {
@@ -80,10 +81,10 @@ export class ActivitiesPage {
             let dayCss: string = this.monthActivities[i].discipline.name;
             // if same date as nexts activities, merge them if different
             while (this.monthActivities[j + 1] && this.monthActivities[j].date === this.monthActivities[j + 1].date) {
-              if (this.monthActivities[j].discipline.name !== this.monthActivities[j + 1].discipline.name) {
+              if (this.monthActivities[j].discipline.name.indexOf(this.monthActivities[j + 1].discipline.name) < 0) {
                 dayCss = dayCss.concat(` ${this.monthActivities[j + 1].discipline.name}`);
-                j++;
               }
+              j++;
             }
             i = j;
             this.calendarDaysConfig.push({
