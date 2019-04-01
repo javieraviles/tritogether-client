@@ -259,7 +259,12 @@ export class ProfilePage implements OnInit {
   // coach this athlete anymore
   async stopCoaching(athlete: Athlete) {
     this.loading = true;
-    this.athleteService.updateAthleteCoach(athlete.id)
+    const AthletesCoach: Coach = {
+      name: this.user.name,
+      email: this.user.email,
+      password: this.f.password.value
+    };
+    this.athleteService.updateAthleteCoach(athlete.id, AthletesCoach)
       .pipe(first())
       .subscribe(
         updatedAthlete => {
