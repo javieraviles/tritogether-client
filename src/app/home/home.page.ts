@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { CoachService } from '../services/coach.service';
 import { NotificationService } from '../services/notification.service';
 import { Activity, Athlete } from '../models';
@@ -24,7 +24,8 @@ export class HomePage {
   constructor(private router: Router,
     private coachService: CoachService,
     private notificationService: NotificationService,
-    public loadingController: LoadingController) {}
+    public loadingController: LoadingController,
+    public toastController: ToastController) {}
 
   ionViewWillEnter() {
     // TODO restore inputs
@@ -62,6 +63,8 @@ export class HomePage {
         loading.dismiss();
       },
       error => {
+        this.presentToast(`An error happened trying to retrieve the list of Athletes: ${error}`);
+        loading.dismiss();
       });
 
   }
@@ -72,7 +75,16 @@ export class HomePage {
         this.pendingNotifications = notifications.length;
       },
       error => {
+        this.presentToast(`An error happened trying to retrieve notifications: ${error}`);
       });
+  }
+
+  async presentToast( message: string ) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
   }
 
 }

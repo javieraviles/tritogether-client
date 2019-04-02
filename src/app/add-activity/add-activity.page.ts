@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, LoadingController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
@@ -28,6 +28,7 @@ export class AddActivityPage implements OnInit {
 
   constructor( public toastController: ToastController,
     public alertController: AlertController,
+    public loadingController: LoadingController,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
@@ -59,23 +60,12 @@ export class AddActivityPage implements OnInit {
     today.setFullYear(today.getFullYear() + 1);
     this.maxDatePicker = today.toISOString();
 
+    // if the parameter activityId is provided, the view is to visualize/edit an existing activity
     if ( Boolean(this.activityId) ) {
       this.editMode = false;
-      this.activityService.getActivity( this.athleteId, this.activityId )
-           .pipe(first())
-           .subscribe(
-              activity => {
-                this.activity = activity;
-                this.activityForm.patchValue({
-                  discipline: this.disciplines.find(i => i.id === activity.discipline.id),
-                  description: activity.description,
-                  date: new Date(activity.date).toISOString()
-                });
-              },
-              error => {
-                this.presentToast(error);
-              });
+      this.getActivity();
     } else {
+      // else, the view is to create a new activity
       this.editMode = true;
       this.activityForm.patchValue({
         discipline: this.disciplines[0],
@@ -83,6 +73,30 @@ export class AddActivityPage implements OnInit {
       });
     }
 
+  }
+
+  private async getActivity() {
+    const loading = await this.loadingController.create({
+      message: 'Loading activity...',
+      spinner: 'crescent'
+    });
+    loading.present();
+
+    this.activityService.getActivity(this.athleteId, this.activityId)
+      .pipe(first())
+      .subscribe(activity => {
+        this.activity = activity;
+        this.activityForm.patchValue({
+          discipline: this.disciplines.find(i => i.id === activity.discipline.id),
+          description: activity.description,
+          date: new Date(activity.date).toISOString()
+        });
+
+        loading.dismiss();
+      }, error => {
+        this.presentToast(`An error happened trying to get Activity's information: ${error}`);
+        loading.dismiss();
+      });
   }
 
   initDisciplines() {
@@ -137,7 +151,7 @@ export class AddActivityPage implements OnInit {
                 this.onSubmitSuccess();
               },
               error => {
-                this.onSubmitError(error);
+                this.onSubmitError(`An error happened trying to update the Activity: ${error}`);
               });
       } else {
         this.activityService.createActivity(this.athleteId, activity)
@@ -147,7 +161,7 @@ export class AddActivityPage implements OnInit {
                 this.onSubmitSuccess();
               },
               error => {
-                this.onSubmitError(error);
+                this.onSubmitError(`An error happened trying to create the Activity: ${error}`);
               });
         }
   }
@@ -179,7 +193,7 @@ export class AddActivityPage implements OnInit {
           this.backToActivities();
         },
         error => {
-          this.presentToast(error);
+          this.presentToast(`An error happened trying to delete the Activity: ${error}`);
         });
   }
 

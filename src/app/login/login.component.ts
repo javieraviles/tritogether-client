@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
                         this.loading = false;
                     },
                     error => {
-                        this.presentToast(error);
+                        this.presentToast(`An error happened trying to create an Athlete: ${error}`);
                         this.loading = false;
                     });
         } else {
@@ -125,7 +125,7 @@ export class LoginComponent implements OnInit {
                         this.loading = false;
                     },
                     error => {
-                        this.presentToast(error);
+                        this.presentToast(`An error happened trying to create a Coach: ${error}`);
                         this.loading = false;
                     });
         }
@@ -139,7 +139,7 @@ export class LoginComponent implements OnInit {
                   this.loading = false;
               },
               error => {
-                this.presentToast(error);
+                this.presentToast(`An error happened trying to Sign in: ${error}`);
                 this.loading = false;
               });
       }

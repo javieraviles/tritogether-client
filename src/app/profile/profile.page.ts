@@ -93,7 +93,7 @@ export class ProfilePage implements OnInit {
         this.coaches = coaches;
       },
       error => {
-        this.presentToast(error);
+        this.presentToast(`An error happened trying to retrieve the list of Coaches: ${error}`);
       });
   }
 
@@ -103,7 +103,7 @@ export class ProfilePage implements OnInit {
         this.athletes = athletes;
       },
       error => {
-        this.presentToast(error);
+        this.presentToast(`An error happened trying to retrieve the list of Athletes: ${error}`);
       });
   }
 
@@ -116,7 +116,7 @@ export class ProfilePage implements OnInit {
             this.notifications = notifications;
           },
           error => {
-            this.presentToast(error);
+            this.presentToast(`An error happened trying to retrieve notifications: ${error}`);
           });
     } else {
       this.notificationService.getAthleteNotifications(+this.currentUser.user.id)
@@ -126,7 +126,7 @@ export class ProfilePage implements OnInit {
             this.notifications = notifications;
           },
           error => {
-            this.presentToast(error);
+            this.presentToast(`An error happened trying to retrieve notifications: ${error}`);
           });
     }
   }
@@ -162,7 +162,7 @@ export class ProfilePage implements OnInit {
             this.profileSubmitSuccess();
           },
           error => {
-            this.profileSubmitError(error);
+            this.profileSubmitError(`An error happened trying to update your profile information: ${error}`);
           });
     } else {
       const updatedUser: Athlete = {
@@ -178,7 +178,7 @@ export class ProfilePage implements OnInit {
             this.profileSubmitSuccess();
           },
           error => {
-            this.profileSubmitError(error);
+            this.profileSubmitError(`An error happened trying to update your profile information: ${error}`);
           });
     }
   }
@@ -314,7 +314,7 @@ export class ProfilePage implements OnInit {
           this.getCoachAthletes();
         },
         error => {
-          this.presentToast(error);
+          this.presentToast(`An error happened trying to update your profile information: ${error}`);
         });
   }
 

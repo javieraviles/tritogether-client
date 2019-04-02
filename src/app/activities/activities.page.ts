@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { ActivityService } from '../services/activity.service';
 import { AthleteService } from '../services/athlete.service';
 import { Activity, Athlete } from '../models';
@@ -20,6 +20,7 @@ export class ActivitiesPage {
   toolbarTitle: string;
   athlete: Athlete = null;
   hasCoach: Boolean = true;
+  today: Date = new Date();
   selectedDate: string = new Date().toISOString().slice(0, 10);
   selectedMonth: string = this.selectedDate.slice(5, 7);
   calendarDate: string;
@@ -34,6 +35,7 @@ export class ActivitiesPage {
     private route: ActivatedRoute,
     private activityService: ActivityService,
     private athleteService: AthleteService,
+    public toastController: ToastController,
     public loadingController: LoadingController) { }
 
   async onDayChange($event) {
@@ -54,6 +56,7 @@ export class ActivitiesPage {
   }
 
   ionViewWillEnter() {
+    this.today.setUTCHours(0, 0, 0, 0);
     this.hasCoach = true;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
@@ -86,6 +89,11 @@ export class ActivitiesPage {
               }
               j++;
             }
+            // calendar removes class "today" from current day after adding a css class
+            // until bug is fixed, will add it manually
+            if (new Date(this.monthActivities[j].date).getTime() === this.today.getTime()) {
+              dayCss = dayCss.concat(` today`);
+            }
             i = j;
             this.calendarDaysConfig.push({
               date: new Date(this.monthActivities[i].date),
@@ -109,6 +117,8 @@ export class ActivitiesPage {
           loading.dismiss();
         },
         error => {
+          this.presentToast(`An error happened while loading Athlete's activities: ${error}`);
+          loading.dismiss();
         });
   }
 
@@ -120,6 +130,7 @@ export class ActivitiesPage {
         this.toolbarTitle = this.athlete.name;
       },
       error => {
+        this.presentToast(`An error happened trying to retrieve Athlete's information: ${error}`);
       });
   }
 
@@ -151,6 +162,14 @@ export class ActivitiesPage {
       case 'other':
         return 'fire-station';
     }
+  }
+
+  async presentToast( message: string ) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
   }
 
 }
