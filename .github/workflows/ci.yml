@@ -22,7 +22,6 @@ jobs:
       run: npm run build:browser
     - name: whats here
       run: ls -l
-    - uses: actions/checkout@master
     - name: Upload ftp
       uses: sebastianpopp/ftp-action@releases/v2
       with:
