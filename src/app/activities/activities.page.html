@@ -2,13 +2,13 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start" *ngIf="isUserCoach">
       <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary" *ngIf="!isUserCoach">
       <ion-button routerLink="/profile">
-        <ion-icon slot="icon-only" name="person-circle"></ion-icon>
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
