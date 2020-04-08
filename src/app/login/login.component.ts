@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading: Boolean;
   submitted: Boolean;
-  signupEnabled: Boolean;
+  registerEnabled: Boolean;
   submitButtonLabel: string;
   clearButtonLabel: string;
   returnUrl: string;
@@ -37,14 +37,14 @@ export class LoginComponent implements OnInit {
           password: ['', Validators.required],
           isCoach: [false]
       });
-      // at first, only login is shown, so name won't be required until signup is enabled
+      // at first, only login is shown, so name won't be required until register is enabled
       this.loginForm.controls['name'].disable();
 
       this.loading = false;
       this.submitted = false;
-      this.signupEnabled = false;
+      this.registerEnabled = false;
       this.submitButtonLabel = 'Log In';
-      this.clearButtonLabel = 'Sign Up';
+      this.clearButtonLabel = 'Register';
 
       // reset login status
       this.authenticationService.logout();
@@ -53,15 +53,15 @@ export class LoginComponent implements OnInit {
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  swapSignup() {
-      this.signupEnabled = !this.signupEnabled;
-      if (this.signupEnabled) {
-        this.submitButtonLabel = 'Sign Up';
+  swapRegister() {
+      this.registerEnabled = !this.registerEnabled;
+      if (this.registerEnabled) {
+        this.submitButtonLabel = 'Register';
         this.clearButtonLabel = 'Cancel';
         this.loginForm.controls['name'].enable();
       } else {
         this.submitButtonLabel = 'Log In';
-        this.clearButtonLabel = 'Sign Up';
+        this.clearButtonLabel = 'Register';
         this.loginForm.controls['name'].disable();
       }
   }
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
           return;
       }
 
-      if (this.signupEnabled) {
+      if (this.registerEnabled) {
 
         this.loading = true;
         if (!Boolean(this.f.isCoach.value)) {
@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit {
                 .subscribe(
                     data => {
                         this.submitted = false;
-                        this.swapSignup();
+                        this.swapRegister();
                         this.loginForm.reset();
                         this.presentToast('Athlete created, you can now log in');
                         this.loading = false;
@@ -119,7 +119,7 @@ export class LoginComponent implements OnInit {
                 .subscribe(
                     data => {
                         this.submitted = false;
-                        this.swapSignup();
+                        this.swapRegister();
                         this.loginForm.reset();
                         this.presentToast('Coach created, you can now log in');
                         this.loading = false;
@@ -137,9 +137,10 @@ export class LoginComponent implements OnInit {
               data => {
                   this.router.navigateByUrl(this.returnUrl);
                   this.loading = false;
+                  this.loginForm.reset();
               },
               error => {
-                this.presentToast(`An error happened trying to Sign in: ${error}`);
+                this.presentToast(`An error happened trying to Log in: ${error}`);
                 this.loading = false;
               });
       }
