@@ -6,9 +6,9 @@ on:
       - master
 
 jobs:
-  build:
+  build-and-deploy:
     name: Build the project
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-node@v1
@@ -20,13 +20,7 @@ jobs:
       run: npm ci
     - name: Building the project
       run: npm run build:browser
-  
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
     - name: Upload ftp
       uses: sebastianpopp/ftp-action@releases/v2
       with:
@@ -34,4 +28,4 @@ jobs:
         user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         localDir: "www"
-        remoteDir: "/"
+        remoteDir: "."
