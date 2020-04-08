@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:    
-      - master
+      - develop
 
 jobs:
   build-and-deploy:
@@ -20,6 +20,8 @@ jobs:
       run: npm ci
     - name: Building the project
       run: npm run build:browser
+    - name: whats here
+      run: ls -l
     - uses: actions/checkout@master
     - name: Upload ftp
       uses: sebastianpopp/ftp-action@releases/v2
