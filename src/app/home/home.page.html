@@ -3,14 +3,14 @@
     <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary">
       <ion-button id="profile-btn" routerLink="/profile">
-        <ion-icon slot="icon-only" name="contact"></ion-icon>
+        <ion-icon slot="icon-only" name="person-circle"></ion-icon>
         <ion-badge *ngIf="isUserCoach && pendingNotifications > 0" id="profile-badge">{{pendingNotifications}}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   
   <ion-list *ngIf="athletes">
     <ion-item *ngFor="let athlete of athletes" (click)="selectAthlete(athlete)" detail="true">

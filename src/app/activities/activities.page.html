@@ -8,13 +8,13 @@
     <ion-title>{{toolbarTitle}}</ion-title>
     <ion-buttons slot="primary" *ngIf="!isUserCoach">
       <ion-button routerLink="/profile">
-        <ion-icon slot="icon-only" name="contact"></ion-icon>
+        <ion-icon slot="icon-only" name="person-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
 
   <ion-card *ngIf="!hasCoach">
     <ion-card-header>

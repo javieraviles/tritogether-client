@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { AuthGuard } from './helpers/auth.guard';
 import { RolGuard } from './helpers/rol.guard';
 import { LoginComponent } from './login/login.component';
@@ -12,22 +12,22 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule',
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
     canActivate: [AuthGuard, RolGuard]
   },
   {
     path: 'profile',
-    loadChildren: './profile/profile.module#ProfilePageModule',
+    loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'activities',
-    loadChildren: './activities/activities.module#ActivitiesPageModule',
+    loadChildren: () => import('./activities/activities.module').then(m => m.ActivitiesPageModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'addActivity',
-    loadChildren: './add-activity/add-activity.module#AddActivityPageModule',
+    loadChildren: () => import('./add-activity/add-activity.module').then(m => m.AddActivityPageModule),
     canActivate: [AuthGuard]
   },
   {
@@ -37,7 +37,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
