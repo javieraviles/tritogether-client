@@ -20,12 +20,10 @@ jobs:
       run: npm ci
     - name: Building the project
       run: npm run build:browser
-    - uses: actions/checkout@master
-    - name: Upload ftp
-      uses: sebastianpopp/ftp-action@releases/v2
+    - name: Upload to ftp
+      uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
-        host: ${{ secrets.FTP_SERVER }}
-        user: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        localDir: "www"
-        remoteDir: "."
+        ftp-server: ${{ secrets.FTP_SERVER }}
+        ftp-username: ${{ secrets.FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: www

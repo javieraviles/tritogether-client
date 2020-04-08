@@ -2,21 +2,21 @@
 <ion-toolbar color="primary">
   <ion-buttons slot="start">
     <ion-button routerLink="/home">
-      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
     </ion-button>
   </ion-buttons>
   <ion-title>Profile</ion-title>
   <ion-buttons slot="primary">
     <ion-button (click)="switchEditMode()" *ngIf="!loading">
-      <ion-icon *ngIf="!editMode" slot="icon-only" name="create"></ion-icon>
-      <ion-icon *ngIf="editMode" slot="icon-only" name="close"></ion-icon>
+      <ion-icon *ngIf="!editMode" slot="icon-only" name="create-outline"></ion-icon>
+      <ion-icon *ngIf="editMode" slot="icon-only" name="close-outline"></ion-icon>
     </ion-button>
     <ion-button [disabled]="loading || userForm.invalid" (click)="profileSubmit()" *ngIf="editMode">
       <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-      <ion-icon slot="icon-only" name="save"></ion-icon>
+      <ion-icon slot="icon-only" name="save-outline"></ion-icon>
     </ion-button>
     <ion-button routerLink="/login">
-      <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
     </ion-button>
   </ion-buttons>
 </ion-toolbar>
@@ -86,9 +86,9 @@
         </ion-label>
       </ion-item-divider>
       <ion-item *ngFor="let athlete of athletes">
-        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
         <ion-label>{{athlete.name}}</ion-label>
-        <ion-button *ngIf="editMode" [disabled]="loading || userForm.invalid" size="small" fill="outline" slot="end" (click)="confirmStopCoaching(athlete)">Stop coaching</ion-button>
+        <ion-button *ngIf="editMode" [disabled]="loading || userForm.invalid" size="small" fill="outline" color="warning" slot="end" (click)="confirmStopCoaching(athlete)">Stop coaching</ion-button>
       </ion-item>
     </ion-list>
 
