@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="backToActivities()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{activityId ? 'Edit' : 'Create'}} activity</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="editMode = !editMode" *ngIf="!loading && isUserCoach && activityId">
+        <ion-icon *ngIf="!editMode" slot="icon-only" name="create"></ion-icon>
+        <ion-icon *ngIf="editMode" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteActivityAlertConfirmation()" *ngIf="isUserCoach && !editMode">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onSubmit()" [disabled]="loading || activityForm.invalid" *ngIf="editMode && isUserCoach">
+        <img style="margin-right:10px;" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+        <ion-icon slot="icon-only" name="save"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-list *ngIf="!editMode">
+        <ion-item>
+          <ion-label>{{activity?.date  | date:'fullDate'}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{activity?.discipline.name | titlecase}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label style="white-space: pre-line !important;" text-wrap>{{activity?.description}}</ion-label>
+        </ion-item>
+      </ion-list>
+
+    <form [formGroup]="activityForm" *ngIf="editMode">
+      
+        <ion-item>
+          <ion-label position="stacked">Date</ion-label>
+          <ion-datetime formControlName="date" display-format="DD/MM/YYYY" [max]="maxDatePicker"></ion-datetime>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Discipline</ion-label>
+          <ion-select formControlName="discipline" okText="OK" cancelText="Cancel">
+            <ion-select-option *ngFor="let discipline of disciplines" [value]="discipline">{{discipline.name | titlecase }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Description</ion-label>
+          <ion-textarea autofocus="true" maxlength="255" minlength="10" rows="9" placeholder="Enter session notes here..." formControlName="description"></ion-textarea>
+        </ion-item>
+
+    </form>
+</ion-content>
