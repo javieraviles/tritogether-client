@@ -7,7 +7,6 @@ import { AthleteService } from '../services/athlete.service';
 import { CoachService } from '../services/coach.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { NotificationService } from '../services/notification.service';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -81,14 +80,14 @@ export class ProfilePage implements OnInit {
 
   getUserInfo() {
     if (this.isUserCoach) {
-      return this.coachService.getCoach(+this.currentUser.user.id).toPromise();
+      return this.coachService.getCoach(+this.currentUser.user.id);
     } else {
-      return this.athleteService.getAthlete(+this.currentUser.user.id).toPromise();
+      return this.athleteService.getAthlete(+this.currentUser.user.id);
     }
   }
 
   getAllCoaches() {
-    this.coachService.getAll().pipe(first()).subscribe(
+    this.coachService.getAll().then(
       coaches => {
         this.coaches = coaches;
       },
@@ -98,7 +97,7 @@ export class ProfilePage implements OnInit {
   }
 
   getCoachAthletes() {
-    this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
+    this.coachService.getCoachAthletes(this.currentUser.user.id).then(
       athletes => {
         this.athletes = athletes;
       },
@@ -110,8 +109,7 @@ export class ProfilePage implements OnInit {
   getUserNotifications() {
     if (this.isUserCoach) {
       this.notificationService.getCoachNotifications(+this.currentUser.user.id)
-        .pipe(first())
-        .subscribe(
+        .then(
           notifications => {
             this.notifications = notifications;
           },
@@ -120,8 +118,7 @@ export class ProfilePage implements OnInit {
           });
     } else {
       this.notificationService.getAthleteNotifications(+this.currentUser.user.id)
-        .pipe(first())
-        .subscribe(
+        .then(
           notifications => {
             this.notifications = notifications;
           },
@@ -156,8 +153,7 @@ export class ProfilePage implements OnInit {
       };
 
       this.coachService.updateCoach(+this.currentUser.user.id, updatedUser)
-        .pipe(first())
-        .subscribe(
+        .then(
           data => {
             this.profileSubmitSuccess();
           },
@@ -172,8 +168,7 @@ export class ProfilePage implements OnInit {
         coach: removeCoach ? null : this.user.coach
       };
       this.athleteService.updateAthlete(+this.currentUser.user.id, updatedUser)
-        .pipe(first())
-        .subscribe(
+        .then(
           data => {
             this.profileSubmitSuccess();
           },
@@ -184,7 +179,7 @@ export class ProfilePage implements OnInit {
   }
 
   refreshToken() {
-    return this.authenticationService.login(this.f.email.value, this.f.password.value, this.isUserCoach).toPromise();
+    return this.authenticationService.login(this.f.email.value, this.f.password.value, this.isUserCoach);
   }
 
   async profileSubmitSuccess() {
@@ -202,8 +197,7 @@ export class ProfilePage implements OnInit {
   // when clicking here, means they want to send a new notification to a coach
   requestCoaching(coach: Coach) {
     this.notificationService.createNotification(this.currentUser.user.id, { coach: coach })
-      .pipe(first())
-      .subscribe(
+      .then(
         data => {
           this.getUserNotifications();
           this.presentToast(`Coaching request sent to ${coach.name}.`);
@@ -243,8 +237,7 @@ export class ProfilePage implements OnInit {
   approveCoaching(notification: Notification) {
     notification.status = NotificationStatus.APPROVED;
     this.athleteService.updateAthleteCoach(notification.athlete.id, this.user)
-      .pipe(first())
-      .subscribe(
+      .then(
         athlete => {
           this.approveCoachingNotification(notification);
           this.presentToast(`You now coach ${notification.athlete.name}`);
@@ -265,8 +258,7 @@ export class ProfilePage implements OnInit {
       password: this.f.password.value
     };
     this.athleteService.updateAthleteCoach(athlete.id, AthletesCoach)
-      .pipe(first())
-      .subscribe(
+      .then(
         updatedAthlete => {
           this.getCoachAthletes();
           this.presentToast(`You are no longer coaching ${athlete.name}`);
@@ -307,8 +299,7 @@ export class ProfilePage implements OnInit {
 
   approveCoachingNotification(notification: Notification) {
     this.notificationService.updateNotification(notification.athlete.id, notification.id, notification)
-      .pipe(first())
-      .subscribe(
+      .then(
         updatedNotification => {
           this.getUserNotifications();
           this.getCoachAthletes();
@@ -324,8 +315,7 @@ export class ProfilePage implements OnInit {
   rejectCoaching(notification: Notification) {
     notification.status = NotificationStatus.REJECTED;
     this.notificationService.updateNotification(notification.athlete.id, notification.id, notification)
-      .pipe(first())
-      .subscribe(
+      .then(
         updatedNotification => {
           this.getUserNotifications();
           this.presentToast(`Coaching request rejected`);

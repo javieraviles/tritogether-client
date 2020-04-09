@@ -4,7 +4,6 @@ import { LoadingController, ToastController } from '@ionic/angular';
 import { CoachService } from '../services/coach.service';
 import { NotificationService } from '../services/notification.service';
 import { Activity, Athlete } from '../models';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +24,7 @@ export class HomePage {
     private coachService: CoachService,
     private notificationService: NotificationService,
     public loadingController: LoadingController,
-    public toastController: ToastController) {}
+    public toastController: ToastController) { }
 
   ionViewWillEnter() {
     // TODO restore inputs
@@ -56,7 +55,7 @@ export class HomePage {
     });
     loading.present();
 
-    await this.coachService.getCoachAthletes(this.currentUser.user.id).pipe(first()).subscribe(
+    await this.coachService.getCoachAthletes(this.currentUser.user.id).then(
       athletes => {
         this.athletes = athletes;
 
@@ -70,7 +69,7 @@ export class HomePage {
   }
 
   getPendingNotifications() {
-    this.notificationService.getCoachNotifications(this.currentUser.user.id).pipe(first()).subscribe(
+    this.notificationService.getCoachNotifications(this.currentUser.user.id).then(
       notifications => {
         this.pendingNotifications = notifications.length;
       },
@@ -79,7 +78,7 @@ export class HomePage {
       });
   }
 
-  async presentToast( message: string ) {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
       duration: 2000

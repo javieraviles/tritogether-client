@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController, AlertController, LoadingController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
 import { ActivityService } from '../services/activity.service';
 import { Activity, Discipline } from '../models';
 
@@ -83,8 +82,7 @@ export class AddActivityPage implements OnInit {
     loading.present();
 
     this.activityService.getActivity(this.athleteId, this.activityId)
-      .pipe(first())
-      .subscribe(activity => {
+      .then(activity => {
         this.activity = activity;
         this.activityForm.patchValue({
           discipline: this.disciplines.find(i => i.id === activity.discipline.id),
@@ -145,8 +143,7 @@ export class AddActivityPage implements OnInit {
       // new activity or editing an existing one?
       if ( Boolean(this.activityId) ) {
         this.activityService.updateActivity(this.athleteId, this.activityId, activity)
-          .pipe(first())
-          .subscribe(
+          .then(
               data => {
                 this.onSubmitSuccess();
               },
@@ -155,8 +152,7 @@ export class AddActivityPage implements OnInit {
               });
       } else {
         this.activityService.createActivity(this.athleteId, activity)
-          .pipe(first())
-          .subscribe(
+          .then(
               data => {
                 this.onSubmitSuccess();
               },
@@ -186,8 +182,7 @@ export class AddActivityPage implements OnInit {
 
   deleteActivity() {
     this.activityService.deleteActivity(this.athleteId, this.activityId)
-      .pipe(first())
-      .subscribe(
+      .then(
         () => {
           this.presentToast('Your activity has been deleted.');
           this.backToActivities();

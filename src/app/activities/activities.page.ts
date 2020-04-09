@@ -4,7 +4,6 @@ import { LoadingController, ToastController } from '@ionic/angular';
 import { ActivityService } from '../services/activity.service';
 import { AthleteService } from '../services/athlete.service';
 import { Activity, Athlete } from '../models';
-import { first } from 'rxjs/operators';
 import { CalendarComponentOptions, DayConfig } from 'ion2-calendar';
 
 @Component({
@@ -73,7 +72,7 @@ export class ActivitiesPage {
 
     this.activityService.getAthleteActivities(+this.route.snapshot.paramMap.get('athleteId'),
       { month: this.selectedMonth })
-      .pipe(first()).subscribe(
+      .then(
         async activities => {
           this.monthActivities = activities;
           this.calendarDaysConfig = [];
@@ -123,7 +122,7 @@ export class ActivitiesPage {
   }
 
   getAthleteInfo(athleteId: number) {
-    this.athleteService.getAthlete(athleteId).pipe(first()).subscribe(
+    this.athleteService.getAthlete(athleteId).then(
       athlete => {
         this.athlete = athlete;
         this.hasCoach = athlete.coach ? true : false;
@@ -139,12 +138,12 @@ export class ActivitiesPage {
   }
 
   showActivity(activity: Activity) {
-    this.router.navigate(['/addActivity', { activityId: activity.id,  athleteId: this.athlete.id }]);
+    this.router.navigate(['/addActivity', { activityId: activity.id, athleteId: this.athlete.id }]);
   }
 
   getTodayActivitiesFromMonthActivities() {
     this.todayActivities = [];
-    this.monthActivities.forEach( (activity) => {
+    this.monthActivities.forEach((activity) => {
       if (activity.date.toString() === this.selectedDate) {
         this.todayActivities.push(activity);
       }
@@ -164,7 +163,7 @@ export class ActivitiesPage {
     }
   }
 
-  async presentToast( message: string ) {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
       duration: 2000

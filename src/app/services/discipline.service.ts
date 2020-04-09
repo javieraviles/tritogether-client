@@ -10,6 +10,6 @@ export class DisciplineService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Discipline[]>(`${config.apiUrl}/disciplines`);
+        return this.http.get<Discipline[]>(`${config.apiUrl}/disciplines`).toPromise();
     }
 }
