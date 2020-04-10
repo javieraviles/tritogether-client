@@ -10,18 +10,18 @@ export class NotificationService {
     constructor(private http: HttpClient) { }
 
     getAthleteNotifications(athleteId: number) {
-        return this.http.get<Notification[]>(`${config.apiUrl}/athletes/${athleteId}/notifications`);
+        return this.http.get<Notification[]>(`${config.apiUrl}/athletes/${athleteId}/notifications`).toPromise();
     }
 
     getCoachNotifications(coachId: number) {
-        return this.http.get<Notification[]>(`${config.apiUrl}/coaches/${coachId}/notifications`);
+        return this.http.get<Notification[]>(`${config.apiUrl}/coaches/${coachId}/notifications`).toPromise();
     }
 
     createNotification(athleteId: number, notification: Notification) {
-        return this.http.post<Notification>(`${config.apiUrl}/athletes/${athleteId}/notifications`, notification);
+        return this.http.post<Notification>(`${config.apiUrl}/athletes/${athleteId}/notifications`, notification).toPromise();
     }
 
     updateNotification(athleteId: number, notificationId: number, notification: Notification) {
-        return this.http.put<Notification>(`${config.apiUrl}/athletes/${athleteId}/notifications/${notificationId}`, notification);
+        return this.http.put<Notification>(`${config.apiUrl}/athletes/${athleteId}/notifications/${notificationId}`, notification).toPromise();
     }
 }

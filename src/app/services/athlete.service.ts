@@ -8,22 +8,22 @@ export class AthleteService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Athlete[]>(`${config.apiUrl}/athletes`);
+        return this.http.get<Athlete[]>(`${config.apiUrl}/athletes`).toPromise();
     }
 
     getAthlete(athleteId: number) {
-        return this.http.get<Athlete>(`${config.apiUrl}/athletes/${athleteId}`);
+        return this.http.get<Athlete>(`${config.apiUrl}/athletes/${athleteId}`).toPromise();
     }
 
     createAthlete(athlete: Athlete) {
-        return this.http.post<Athlete>(`${config.apiUrl}/athletes`, athlete);
+        return this.http.post<Athlete>(`${config.apiUrl}/athletes`, athlete).toPromise();
     }
 
     updateAthlete(athleteId: number, athlete: Athlete) {
-        return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}`, athlete);
+        return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}`, athlete).toPromise();
     }
 
     updateAthleteCoach(athleteId: number, coach?: Coach) {
-        return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}/coach`, coach);
+        return this.http.put<Athlete>(`${config.apiUrl}/athletes/${athleteId}/coach`, coach).toPromise();
     }
 }
