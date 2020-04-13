@@ -25,7 +25,6 @@ export class ProfilePage implements OnInit {
   notifications: Notification[] = [];
   coaches: Coach[] = null;
   athletes: Athlete[] = null;
-  availability: Boolean[] = [true, false, true, true, true, false, true];
 
   constructor(private router: Router,
     public alertController: AlertController,
@@ -166,6 +165,7 @@ export class ProfilePage implements OnInit {
         name: this.f.name.value,
         email: this.f.email.value,
         password: this.f.password.value,
+        availability: this.user.availability,
         coach: removeCoach ? null : this.user.coach
       };
       this.athleteService.updateAthlete(+this.currentUser.user.id, updatedUser)

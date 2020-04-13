@@ -99,31 +99,31 @@
     </ion-list-header>
     <ion-item>
       <ion-label>Monday</ion-label>
-      <ion-toggle [(ngModel)]="availability[0]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.monday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Tuesday</ion-label>
-      <ion-toggle [(ngModel)]="availability[1]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.tuesday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Wednesday</ion-label>
-      <ion-toggle [(ngModel)]="availability[2]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.wednesday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Thursday</ion-label>
-      <ion-toggle [(ngModel)]="availability[3]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.thursday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Friday</ion-label>
-      <ion-toggle [(ngModel)]="availability[4]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.friday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Saturday</ion-label>
-      <ion-toggle [(ngModel)]="availability[5]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.saturday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Sunday</ion-label>
-      <ion-toggle [(ngModel)]="availability[6]"></ion-toggle>
+      <ion-toggle [(ngModel)]="user.availability.sunday" [disabled]="!editMode"></ion-toggle>
     </ion-item>
   </ion-list>
 

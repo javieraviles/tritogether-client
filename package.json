@@ -1,6 +1,6 @@
 {
-  "name": "TriTogether",
-  "version": "0.0.2",
+  "name": "tritogether-client",
+  "version": "0.0.3",
   "author": "Javier Aviles",
   "homepage": "https://github.com/javieraviles/tritogether-client",
   "scripts": {
