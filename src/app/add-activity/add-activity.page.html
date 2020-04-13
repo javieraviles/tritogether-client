@@ -40,7 +40,7 @@
       
         <ion-item>
           <ion-label position="stacked">Date</ion-label>
-          <ion-datetime formControlName="date" display-format="DD/MM/YYYY" [max]="maxDatePicker"></ion-datetime>
+          <ion-datetime (ionChange)="isAthleteAvailable()" formControlName="date" display-format="DD/MM/YYYY" [max]="maxDatePicker"></ion-datetime>
         </ion-item>
 
         <ion-item>
@@ -56,4 +56,14 @@
         </ion-item>
 
     </form>
+
+    <ion-card color="warning" *ngIf="availabilityAlert">
+      <ion-item color="warning">
+        <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+        <ion-label>Athlete availability</ion-label>
+      </ion-item>
+      <ion-card-content>
+        {{athlete.name}} chose {{activityWeekdayName}}s as non-training days.
+      </ion-card-content>
+    </ion-card>
 </ion-content>

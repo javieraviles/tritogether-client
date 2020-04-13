@@ -165,6 +165,7 @@ export class ProfilePage implements OnInit {
         name: this.f.name.value,
         email: this.f.email.value,
         password: this.f.password.value,
+        availability: this.user.availability,
         coach: removeCoach ? null : this.user.coach
       };
       this.athleteService.updateAthlete(+this.currentUser.user.id, updatedUser)

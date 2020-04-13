@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController, AlertController, LoadingController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as moment from 'moment';
 import { ActivityService } from '../services/activity.service';
-import { Activity, Discipline } from '../models';
+import { AthleteService } from '../services/athlete.service';
+import { Activity, Discipline, Athlete } from '../models';
 
 @Component({
   selector: 'app-add-activity',
@@ -22,8 +24,11 @@ export class AddActivityPage implements OnInit {
   athleteId: number = null;
   selectedDate: Date = null;
   activity: Activity = null;
+  athlete: Athlete = null;
   currentUser: any = null;
   isUserCoach: Boolean = false;
+  availabilityAlert: Boolean = false;
+  activityWeekdayName: string = null;
 
   constructor( public toastController: ToastController,
     public alertController: AlertController,
@@ -31,7 +36,8 @@ export class AddActivityPage implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private activityService: ActivityService) { }
+    private activityService: ActivityService,
+    private athleteService: AthleteService) { }
 
   ngOnInit() {
     this.activityForm = this.formBuilder.group({
@@ -43,7 +49,8 @@ export class AddActivityPage implements OnInit {
     this.initDisciplines();
   }
 
-  ionViewWillEnter() {
+
+  async ionViewWillEnter() {
     this.loading = false;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
@@ -54,6 +61,8 @@ export class AddActivityPage implements OnInit {
     // this line is to avoid different timezones to change the chosen day
     this.selectedDate.setUTCDate(this.selectedDate.getDate());
 
+    await this.getAthlete();
+
     this.activityForm.reset();
     const today = new Date();
     today.setFullYear(today.getFullYear() + 1);
@@ -62,7 +71,7 @@ export class AddActivityPage implements OnInit {
     // if the parameter activityId is provided, the view is to visualize/edit an existing activity
     if ( Boolean(this.activityId) ) {
       this.editMode = false;
-      this.getActivity();
+      await this.getActivity();
     } else {
       // else, the view is to create a new activity
       this.editMode = true;
@@ -71,6 +80,7 @@ export class AddActivityPage implements OnInit {
         date: this.selectedDate.toISOString()
       });
     }
+    this.isAthleteAvailable();
 
   }
 
@@ -81,7 +91,7 @@ export class AddActivityPage implements OnInit {
     });
     loading.present();
 
-    this.activityService.getActivity(this.athleteId, this.activityId)
+    await this.activityService.getActivity(this.athleteId, this.activityId)
       .then(activity => {
         this.activity = activity;
         this.activityForm.patchValue({
@@ -94,6 +104,14 @@ export class AddActivityPage implements OnInit {
       }, error => {
         this.presentToast(`An error happened trying to get Activity's information: ${error}`);
         loading.dismiss();
+      });
+  }
+
+  private async getAthlete() {
+    await this.athleteService.getAthlete(this.athleteId).then(
+      athlete => this.athlete = athlete,
+      error => {
+        this.presentToast(`An error happened trying to retrieve Athlete's information: ${error}`);
       });
   }
 
@@ -214,6 +232,16 @@ export class AddActivityPage implements OnInit {
     });
 
     await deleteAlert.present();
+  }
+
+  isAthleteAvailable() {
+    this.activityWeekdayName = moment(this.f.date.value).format('dddd');
+    if(this.athlete.availability[this.activityWeekdayName.toLowerCase()]) {
+      this.availabilityAlert = false;
+    } else {
+      this.availabilityAlert = true;
+    }
+    
   }
 
 }
