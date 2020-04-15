@@ -30,7 +30,7 @@ export class AddActivityPage implements OnInit {
   availabilityAlert: Boolean = false;
   activityWeekdayName: string = null;
 
-  constructor( public toastController: ToastController,
+  constructor(public toastController: ToastController,
     public alertController: AlertController,
     public loadingController: LoadingController,
     private formBuilder: FormBuilder,
@@ -69,7 +69,7 @@ export class AddActivityPage implements OnInit {
     this.maxDatePicker = today.toISOString();
 
     // if the parameter activityId is provided, the view is to visualize/edit an existing activity
-    if ( Boolean(this.activityId) ) {
+    if (Boolean(this.activityId)) {
       this.editMode = false;
       await this.getActivity();
     } else {
@@ -118,20 +118,20 @@ export class AddActivityPage implements OnInit {
   initDisciplines() {
     this.disciplines = [
       {
-        id : 1,
-        name : 'swimming'
+        id: 1,
+        name: 'swimming'
       },
       {
-        id : 2,
-        name : 'cycling'
+        id: 2,
+        name: 'cycling'
       },
       {
-        id : 3,
-        name : 'running'
+        id: 3,
+        name: 'running'
       },
       {
-        id : 4,
-        name : 'other'
+        id: 4,
+        name: 'other'
       }
     ];
   }
@@ -144,40 +144,40 @@ export class AddActivityPage implements OnInit {
   get f() { return this.activityForm.controls; }
 
   onSubmit() {
-      this.submitted = true;
+    this.submitted = true;
 
-      // stop here if form is invalid
-      if (this.activityForm.invalid) {
-          return;
-      }
+    // stop here if form is invalid
+    if (this.activityForm.invalid) {
+      return;
+    }
 
-      const activity = new Activity();
-      activity.description = this.f.description.value;
-      activity.date = new Date(this.f.date.value);
-      activity.discipline = this.f.discipline.value;
+    const activity = new Activity();
+    activity.description = this.f.description.value;
+    activity.date = new Date(this.f.date.value);
+    activity.discipline = this.f.discipline.value;
 
-      this.loading = true;
+    this.loading = true;
 
-      // new activity or editing an existing one?
-      if ( Boolean(this.activityId) ) {
-        this.activityService.updateActivity(this.athleteId, this.activityId, activity)
-          .then(
-              data => {
-                this.onSubmitSuccess();
-              },
-              error => {
-                this.onSubmitError(`An error happened trying to update the Activity: ${error}`);
-              });
-      } else {
-        this.activityService.createActivity(this.athleteId, activity)
-          .then(
-              data => {
-                this.onSubmitSuccess();
-              },
-              error => {
-                this.onSubmitError(`An error happened trying to create the Activity: ${error}`);
-              });
-        }
+    // new activity or editing an existing one?
+    if (Boolean(this.activityId)) {
+      this.activityService.updateActivity(this.athleteId, this.activityId, activity)
+        .then(
+          data => {
+            this.onSubmitSuccess();
+          },
+          error => {
+            this.onSubmitError(`An error happened trying to update the Activity: ${error}`);
+          });
+    } else {
+      this.activityService.createActivity(this.athleteId, activity)
+        .then(
+          data => {
+            this.onSubmitSuccess();
+          },
+          error => {
+            this.onSubmitError(`An error happened trying to create the Activity: ${error}`);
+          });
+    }
   }
 
   onSubmitSuccess() {
@@ -190,7 +190,7 @@ export class AddActivityPage implements OnInit {
     this.loading = false;
   }
 
-  async presentToast( message: string ) {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
       duration: 2000
@@ -234,14 +234,15 @@ export class AddActivityPage implements OnInit {
     await deleteAlert.present();
   }
 
+  // an availability warning will tell the coach whether the athlete is
+  // available for such day of the week. Should never appear for past activities
   isAthleteAvailable() {
     this.activityWeekdayName = moment(this.f.date.value).format('dddd');
-    if(this.athlete.availability[this.activityWeekdayName.toLowerCase()]) {
+    if (this.athlete.availability[this.activityWeekdayName.toLowerCase()] || moment(this.f.date.value).isBefore(moment().format("MM-DD-YYYY"))) {
       this.availabilityAlert = false;
     } else {
       this.availabilityAlert = true;
     }
-    
   }
 
 }
