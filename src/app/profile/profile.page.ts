@@ -131,9 +131,13 @@ export class ProfilePage implements OnInit {
   // convenience getter for easy access to form fields
   get f() { return this.userForm.controls; }
 
-  switchEditMode() {
+  async switchEditMode() {
     this.editMode = !this.editMode;
     this.userForm.controls['password'].setValue('');
+    // if user cancels profile edition, restore default values he might have modified
+    if(!this.editMode) {
+      await this.resetProfile();
+    }
   }
 
   profileSubmit(removeCoach: Boolean = false) {
