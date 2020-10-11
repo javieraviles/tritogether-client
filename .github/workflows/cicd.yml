@@ -1,4 +1,4 @@
-name: CI
+name: CICD
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
-    name: Build the project
+  FTP-Deploy:
+    name: FTP Deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -21,7 +21,7 @@ jobs:
     - name: Building the project
       run: npm run build:browser
     - name: Upload to ftp
-      uses: SamKirkland/FTP-Deploy-Action@3.0.0
+      uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.FTP_USERNAME }}

@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{toolbarTitle}}</ion-title>
+    <ion-title>TriTogether</ion-title>
     <ion-buttons slot="primary" *ngIf="!isUserCoach">
       <ion-button routerLink="/profile">
         <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
@@ -41,7 +41,7 @@
   </ion-list>
 
   <ion-item *ngIf="todayActivities && todayActivities.length == 0">
-    <ion-label><span class="maki-lodging"></span>  No training today!</ion-label>
+    <ion-label><span class="maki-lodging"></span>  No training today</ion-label>
   </ion-item>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isUserCoach">

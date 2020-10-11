@@ -16,7 +16,6 @@ export class ActivitiesPage {
   monthActivities: Activity[] = null;
   todayActivities: Activity[] = null;
   isUserCoach: Boolean = false;
-  toolbarTitle: string;
   athlete: Athlete = null;
   hasCoach: Boolean = true;
   today: Date = new Date();
@@ -126,7 +125,6 @@ export class ActivitiesPage {
       athlete => {
         this.athlete = athlete;
         this.hasCoach = athlete.coach ? true : false;
-        this.toolbarTitle = this.athlete.name;
       },
       error => {
         this.presentToast(`An error happened trying to retrieve Athlete's information: ${error}`);
