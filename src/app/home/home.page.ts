@@ -15,7 +15,6 @@ export class HomePage {
   currentUser: any = null;
   activities: Activity[] = null;
   athletes: Athlete[] = null;
-  toolbarTitle: string;
   selectedAthlete: Athlete = null;
   isUserCoach: Boolean = false;
   pendingNotifications: Number = 0;
@@ -31,7 +30,6 @@ export class HomePage {
     this.pendingNotifications = 0;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.isUserCoach = this.currentUser.user.rol === Rol.COACH ? true : false;
-    this.toolbarTitle = this.currentUser.user.name;
     if (this.isUserCoach) {
       this.getCoachAthletes();
       this.getPendingNotifications();

@@ -46,11 +46,6 @@
           <ion-input type="email" required placeholder="Enter your email" minlength="10" maxlength="100"
             formControlName="email" [readonly]="!editMode"></ion-input>
         </ion-item>
-        <ion-item *ngIf="editMode">
-          <ion-label position="floating">Password</ion-label>
-          <ion-input type="password" required placeholder="Enter your password" minlength="8" maxlength="60"
-            formControlName="password"></ion-input>
-        </ion-item>
         <ion-item *ngIf="user.coach">
           <ion-label position="floating">Coach</ion-label>
           <ion-input type="text" [value]="user.coach.name" readonly></ion-input>

@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { Athlete, Coach, Notification, NotificationStatus, Rol } from '../models';
 import { AthleteService } from '../services/athlete.service';
 import { CoachService } from '../services/coach.service';
-import { AuthenticationService } from '../services/authentication.service';
 import { NotificationService } from '../services/notification.service';
 
 @Component({
@@ -31,7 +30,6 @@ export class ProfilePage implements OnInit {
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     private notificationService: NotificationService,
-    private authenticationService: AuthenticationService,
     private athleteService: AthleteService,
     private coachService: CoachService,
     public loadingController: LoadingController) { }
@@ -39,8 +37,7 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
     this.userForm = this.formBuilder.group({
       name: ['', Validators.required],
-      email: ['', Validators.required],
-      password: ['', Validators.required]
+      email: ['', Validators.required]
     });
   }
 
@@ -72,8 +69,7 @@ export class ProfilePage implements OnInit {
     this.loading = false;
     this.userForm.patchValue({
       name: this.user.name,
-      email: this.user.email,
-      password: ''
+      email: this.user.email
     });
     loading.dismiss();
   }
@@ -133,7 +129,6 @@ export class ProfilePage implements OnInit {
 
   async switchEditMode() {
     this.editMode = !this.editMode;
-    this.userForm.controls['password'].setValue('');
     // if user cancels profile edition, restore default values he might have modified
     if(!this.editMode) {
       await this.resetProfile();
@@ -152,8 +147,7 @@ export class ProfilePage implements OnInit {
     if (this.isUserCoach) {
       const updatedUser: Coach = {
         name: this.f.name.value,
-        email: this.f.email.value,
-        password: this.f.password.value
+        email: this.f.email.value
       };
 
       this.coachService.updateCoach(+this.currentUser.user.id, updatedUser)
@@ -168,7 +162,6 @@ export class ProfilePage implements OnInit {
       const updatedUser: Athlete = {
         name: this.f.name.value,
         email: this.f.email.value,
-        password: this.f.password.value,
         availability: this.user.availability,
         coach: removeCoach ? null : this.user.coach
       };
@@ -183,12 +176,7 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  refreshToken() {
-    return this.authenticationService.login(this.f.email.value, this.f.password.value, this.isUserCoach);
-  }
-
   async profileSubmitSuccess() {
-    await this.refreshToken();
     await this.resetProfile();
     this.presentToast('Your profile has been updated.');
   }
@@ -259,8 +247,7 @@ export class ProfilePage implements OnInit {
     this.loading = true;
     const AthletesCoach: Coach = {
       name: this.user.name,
-      email: this.user.email,
-      password: this.f.password.value
+      email: this.user.email
     };
     this.athleteService.updateAthleteCoach(athlete.id, AthletesCoach)
       .then(
