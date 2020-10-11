@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Rol } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class RolGuard implements CanActivate {
@@ -11,7 +12,7 @@ export class RolGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-        if (this.currentUser.user.rol === 'coach') {
+        if (this.currentUser.user.rol === Rol.COACH) {
             return true;
         }
 

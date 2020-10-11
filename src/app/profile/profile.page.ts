@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController, ToastController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Athlete, Coach, Notification, NotificationStatus } from '../models';
+import { Athlete, Coach, Notification, NotificationStatus, Rol } from '../models';
 import { AthleteService } from '../services/athlete.service';
 import { CoachService } from '../services/coach.service';
 import { AuthenticationService } from '../services/authentication.service';
@@ -55,7 +55,7 @@ export class ProfilePage implements OnInit {
     });
     loading.present();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
+    this.isUserCoach = this.currentUser.user.rol === Rol.COACH ? true : false;
     this.coaches = null;
     this.athletes = null;
     // if it is an athlete and has no coach, get all

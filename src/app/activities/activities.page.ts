@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { ActivityService } from '../services/activity.service';
 import { AthleteService } from '../services/athlete.service';
-import { Activity, Athlete } from '../models';
+import { Activity, Athlete, Rol } from '../models';
 import { CalendarComponentOptions, DayConfig } from 'ion2-calendar';
 
 @Component({
@@ -58,7 +58,7 @@ export class ActivitiesPage {
     this.today.setUTCHours(0, 0, 0, 0);
     this.hasCoach = true;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
+    this.isUserCoach = this.currentUser.user.rol === Rol.COACH ? true : false;
     this.getAthleteInfo(+this.route.snapshot.paramMap.get('athleteId'));
     this.getAthleteActivities(this.selectedDate);
   }

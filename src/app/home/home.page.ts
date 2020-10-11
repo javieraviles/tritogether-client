@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { CoachService } from '../services/coach.service';
 import { NotificationService } from '../services/notification.service';
-import { Activity, Athlete } from '../models';
+import { Activity, Athlete, Rol } from '../models';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +30,7 @@ export class HomePage {
     // TODO restore inputs
     this.pendingNotifications = 0;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
+    this.isUserCoach = this.currentUser.user.rol === Rol.COACH ? true : false;
     this.toolbarTitle = this.currentUser.user.name;
     if (this.isUserCoach) {
       this.getCoachAthletes();

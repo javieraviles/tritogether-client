@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { ActivityService } from '../services/activity.service';
 import { AthleteService } from '../services/athlete.service';
-import { Activity, Discipline, Athlete } from '../models';
+import { Activity, Discipline, Athlete, Rol } from '../models';
 
 @Component({
   selector: 'app-add-activity',
@@ -53,7 +53,7 @@ export class AddActivityPage implements OnInit {
   async ionViewWillEnter() {
     this.loading = false;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.isUserCoach = this.currentUser.user.rol === 'coach' ? true : false;
+    this.isUserCoach = this.currentUser.user.rol === Rol.COACH ? true : false;
 
     this.activityId = +this.route.snapshot.paramMap.get('activityId');
     this.athleteId = +this.route.snapshot.paramMap.get('athleteId');
