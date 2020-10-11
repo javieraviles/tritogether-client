@@ -11,8 +11,18 @@
 </ion-header>
 
 <ion-content>
+
+  <ion-card *ngIf="athletes?.length < 1">
+    <ion-card-header>
+      <ion-card-title>Find new athletes</ion-card-title>
+    </ion-card-header>
   
-  <ion-list *ngIf="athletes">
+    <ion-card-content>
+      Looks like you don't have any athlete to coach at the moment; have a look at <a routerLink="/profile">your notifications</a> in case some of them are interested!
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-list *ngIf="athletes?.length > 0">
     <ion-item *ngFor="let athlete of athletes" (click)="selectAthlete(athlete)" detail="true">
       <ion-label>{{athlete.name}}</ion-label>
     </ion-item>

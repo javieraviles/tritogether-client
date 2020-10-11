@@ -14,7 +14,7 @@ export class HomePage {
 
   currentUser: any = null;
   activities: Activity[] = null;
-  athletes: Athlete[] = null;
+  athletes: Athlete[] = [];
   selectedAthlete: Athlete = null;
   isUserCoach: Boolean = false;
   pendingNotifications: Number = 0;
