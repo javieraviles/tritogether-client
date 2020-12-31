@@ -36,6 +36,11 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required],
       isCoach: [false]
     });
+  }
+
+  ionViewWillEnter() {
+    this.loginForm.reset();
+    
     // at first, only login is shown, so name won't be required until register is enabled
     this.loginForm.controls['name'].disable();
 
@@ -66,7 +71,6 @@ export class LoginComponent implements OnInit {
   }
 
   forgotPassword() {
-    this.loginForm.reset();
     this.router.navigate(['/passwordReset']);
   }
 
@@ -81,6 +85,18 @@ export class LoginComponent implements OnInit {
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
+  login() {
+    this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.isCoach.value)
+      .then(
+        data => {
+          this.router.navigateByUrl(this.returnUrl);
+        },
+        error => {
+          this.presentToast(`An error happened trying to Log in: ${error}`);
+          this.loading = false;
+        });
+  }
+
   onSubmit() {
     this.submitted = true;
 
@@ -90,7 +106,7 @@ export class LoginComponent implements OnInit {
     }
     this.loading = true;
 
-    if (this.registerEnabled) {    
+    if (this.registerEnabled) {
 
       if (!Boolean(this.f.isCoach.value)) {
         this.athleteService.createAthlete(
@@ -101,11 +117,8 @@ export class LoginComponent implements OnInit {
           })
           .then(
             data => {
-              this.submitted = false;
-              this.swapRegister();
-              this.loginForm.reset();
-              this.presentToast('Athlete created, you can now log in');
-              this.loading = false;
+              this.login();
+              this.presentToast(`Athlete ${this.f.name.value} created successfully`);
             },
             error => {
               this.presentToast(`An error happened trying to create an Athlete: ${error}`);
@@ -120,11 +133,8 @@ export class LoginComponent implements OnInit {
           })
           .then(
             data => {
-              this.submitted = false;
-              this.swapRegister();
-              this.loginForm.reset();
-              this.presentToast('Coach created, you can now log in');
-              this.loading = false;
+              this.login();
+              this.presentToast(`Coach ${this.f.name.value} created successfully`);
             },
             error => {
               this.presentToast(`Error trying to create a Coach: ${error}`);
@@ -132,17 +142,7 @@ export class LoginComponent implements OnInit {
             });
       }
     } else {
-      this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.isCoach.value)
-        .then(
-          data => {
-            this.router.navigateByUrl(this.returnUrl);
-            this.loading = false;
-            this.loginForm.reset();
-          },
-          error => {
-            this.presentToast(`An error happened trying to Log in: ${error}`);
-            this.loading = false;
-          });
+      this.login();
     }
 
   }
