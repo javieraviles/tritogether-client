@@ -65,10 +65,15 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  forgotPassword() {
+    this.loginForm.reset();
+    this.router.navigate(['/passwordReset']);
+  }
+
   async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 2000
+      duration: 4000
     });
     toast.present();
   }
@@ -83,10 +88,10 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
+    this.loading = true;
 
-    if (this.registerEnabled) {
+    if (this.registerEnabled) {    
 
-      this.loading = true;
       if (!Boolean(this.f.isCoach.value)) {
         this.athleteService.createAthlete(
           {
@@ -122,12 +127,11 @@ export class LoginComponent implements OnInit {
               this.loading = false;
             },
             error => {
-              this.presentToast(`An error happened trying to create a Coach: ${error}`);
+              this.presentToast(`Error trying to create a Coach: ${error}`);
               this.loading = false;
             });
       }
     } else {
-      this.loading = true;
       this.authenticationService.login(this.f.username.value, this.f.password.value, this.f.isCoach.value)
         .then(
           data => {

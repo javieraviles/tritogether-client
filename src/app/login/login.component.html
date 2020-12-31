@@ -34,11 +34,20 @@
                                 <ion-icon *ngIf="!loading" name="log-in-outline"></ion-icon> {{submitButtonLabel}}
                             </ion-button>
                         </form>
-                        <ion-button [disabled]="loading" fill="clear" expand="block" (click)="swapRegister()">
+                        <ion-button [disabled]="loading" fill="outline" expand="block" (click)="swapRegister()">
                             {{clearButtonLabel}}
                         </ion-button>
                     </ion-card-content>
                 </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-item detail="false" lines="none" button (click)="forgotPassword()">
+                    <ion-label class="ion-text-center">
+                        Forgot your password?
+                    </ion-label>
+                </ion-item>
             </ion-col>
         </ion-row>
     </ion-grid>

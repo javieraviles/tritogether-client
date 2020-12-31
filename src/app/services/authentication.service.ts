@@ -10,7 +10,7 @@ export class AuthenticationService {
 
     constructor(private http: HttpClient, private router: Router) { }
 
-    login(username: string, password: string, isCoach: Boolean) {
+    login(username: string, password: string, isCoach: boolean) {
         return this.http.post<any>(`${config.apiUrl}/signin`, { email: username, password: password, isCoach: isCoach })
             .pipe(map(user => {
                 // login successful if there's a jwt token in the response
@@ -26,5 +26,22 @@ export class AuthenticationService {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
         this.router.navigateByUrl('login');
+    }
+
+    resetPassword(username: string, isCoach: boolean) {
+        return this.http.post<any>(`${config.apiUrl}/reset-password`, { 
+            email: username, 
+            isCoach: isCoach 
+        }).toPromise();
+    }
+
+    changePassword(username: string, password: string, newPassword: string, isCoach: boolean, isTemporary: boolean) {
+        return this.http.put<any>(`${config.apiUrl}/change-password`, { 
+            email: username, 
+            password: password, 
+            newPassword: newPassword, 
+            isCoach: isCoach, 
+            isTemporary: isTemporary 
+        }).toPromise();
     }
 }
