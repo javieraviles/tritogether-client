@@ -58,6 +58,7 @@
     </ion-col>
   </ion-row>
 
+  
   <ion-list *ngIf="coaches && !isUserCoach && !notifications.length && !user.coach">
     <ion-item-divider>
       <ion-label>
@@ -70,7 +71,7 @@
       <ion-button size="small" fill="outline" slot="end" (click)="requestCoaching(coach)">Request</ion-button>
     </ion-item>
   </ion-list>
-
+  
   <ion-list *ngIf="notifications.length && !user.coach">
     <ion-item-divider>
       <ion-label>
@@ -82,58 +83,62 @@
       <ion-label *ngIf="!isUserCoach">{{notification.coach.name}}</ion-label>
       <ion-button *ngIf="!isUserCoach" fill="outline" size="small" slot="end" (click)="rejectCoaching(notification)">
         Cancel</ion-button>
-      <ion-label *ngIf="isUserCoach">{{notification.athlete.name}}</ion-label>
-      <ion-button *ngIf="isUserCoach" fill="outline" size="small" slot="end"
+        <ion-label *ngIf="isUserCoach">{{notification.athlete.name}}</ion-label>
+        <ion-button *ngIf="isUserCoach" fill="outline" size="small" slot="end"
         (click)="confirmCoachingAlert(notification)">Respond</ion-button>
-    </ion-item>
-  </ion-list>
-
-  <ion-list *ngIf="!isUserCoach && user.coach">
-    <ion-list-header>
-      Training Availability
-    </ion-list-header>
-    <ion-item>
-      <ion-label>Monday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.monday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Tuesday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.tuesday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Wednesday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.wednesday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Thursday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.thursday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Friday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.friday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Saturday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.saturday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Sunday</ion-label>
-      <ion-toggle [(ngModel)]="user.availability.sunday" [disabled]="!editMode"></ion-toggle>
-    </ion-item>
-  </ion-list>
-
-  <ion-list *ngIf="athletes && athletes.length > 0 && isUserCoach">
-    <ion-item-divider>
-      <ion-label>
-        Your athletes
-      </ion-label>
-    </ion-item-divider>
-    <ion-item *ngFor="let athlete of athletes">
-      <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-label>{{athlete.name}}</ion-label>
-      <ion-button *ngIf="editMode" [disabled]="loading || userForm.invalid" size="small" fill="outline" color="warning"
+      </ion-item>
+    </ion-list>
+    
+    <ion-list *ngIf="!isUserCoach && user.coach">
+      <ion-item-divider>
+        <ion-label>
+          Training Availability
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label>Monday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.monday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Tuesday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.tuesday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Wednesday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.wednesday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Thursday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.thursday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Friday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.friday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Saturday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.saturday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Sunday</ion-label>
+        <ion-toggle [(ngModel)]="user.availability.sunday" [disabled]="!editMode"></ion-toggle>
+      </ion-item>
+    </ion-list>
+    
+    <ion-list *ngIf="athletes && athletes.length > 0 && isUserCoach">
+      <ion-item-divider>
+        <ion-label>
+          Your athletes
+        </ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let athlete of athletes">
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-label>{{athlete.name}}</ion-label>
+        <ion-button *ngIf="editMode" [disabled]="loading || userForm.invalid" size="small" fill="outline" color="warning"
         slot="end" (click)="confirmStopCoaching(athlete)">Stop coaching</ion-button>
-    </ion-item>
-  </ion-list>
+      </ion-item>
+    </ion-list>
 
-</ion-content>
+    <app-change-password [editMode]="editMode"></app-change-password>
+    
+  </ion-content>

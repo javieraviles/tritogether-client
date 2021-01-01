@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController, MenuController } from '@ionic/angular';
 import { AuthenticationService } from '../services/authentication.service';
 
@@ -13,7 +13,6 @@ export class PasswordResetPage implements OnInit {
 
   forgotPasswordForm: FormGroup;
   loading: boolean;
-  submitted: boolean;
   gotTmpCode: boolean;
   submitLabel: string;
   swapEnterCodeLabel: string;
@@ -30,14 +29,13 @@ export class PasswordResetPage implements OnInit {
       username: ['', Validators.required],
       tmpCode: ['', Validators.required],
       newPassword: ['', Validators.required],
-      repeatNewPassword: ['', Validators.required],
+      confirmNewPassword: ['', Validators.required],
       isCoach: [false]
-    });
+    }, { validator: this.newPasswordMismatchValidator });
   }
   
   ionViewWillEnter() {
     this.loading = false;
-    this.submitted = false;
     this.gotTmpCode = true;
   
     this.swapEnterCode();
@@ -57,6 +55,12 @@ export class PasswordResetPage implements OnInit {
     toast.present();
   }
 
+  newPasswordMismatchValidator(c: AbstractControl): { invalid: boolean } {
+    if (c.get('newPassword').value !== c.get('confirmNewPassword').value) {
+      return { invalid: true };
+    }
+  }
+
   backToLogIn() {
     this.forgotPasswordForm.reset();
     this.router.navigate(['/login']);
@@ -68,12 +72,12 @@ export class PasswordResetPage implements OnInit {
       this.swapEnterCodeLabel = "Cancel";
       this.forgotPasswordForm.controls['tmpCode'].enable();
       this.forgotPasswordForm.controls['newPassword'].enable();
-      this.forgotPasswordForm.controls['repeatNewPassword'].enable();
+      this.forgotPasswordForm.controls['confirmNewPassword'].enable();
     } else {
       this.swapEnterCodeLabel = "Got the code";
       this.forgotPasswordForm.controls['tmpCode'].disable();
       this.forgotPasswordForm.controls['newPassword'].disable();
-      this.forgotPasswordForm.controls['repeatNewPassword'].disable();
+      this.forgotPasswordForm.controls['confirmNewPassword'].disable();
     }
   }
 
@@ -81,24 +85,17 @@ export class PasswordResetPage implements OnInit {
   get f() { return this.forgotPasswordForm.controls; }
 
   onSubmit() {
-    this.submitted = true;
     if (this.forgotPasswordForm.invalid) {
       return;
     }
     this.loading = true;
     if (this.gotTmpCode) {
-      if (this.f.newPassword.value != this.f.repeatNewPassword.value) {
-        this.presentToast(`Both passwords must be the same`);
-        this.loading = false;
-        return;
-      }
       this.authenticationService.changePassword(this.f.username.value, this.f.tmpCode.value, this.f.newPassword.value, this.f.isCoach.value, true)
         .then(
           data => {
             this.authenticationService.login(this.f.username.value, this.f.newPassword.value, this.f.isCoach.value)
               .then(
                 data => {
-                  console.log("its actually entering here");
                   this.router.navigate(['/home']);
                   this.presentToast(`Your password was reset successfully`);
                   this.forgotPasswordForm.reset();

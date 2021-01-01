@@ -13,9 +13,8 @@ import { CoachService } from '../services/coach.service';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  loading: Boolean;
-  submitted: Boolean;
-  registerEnabled: Boolean;
+  loading: boolean;
+  registerEnabled: boolean;
   submitButtonLabel: string;
   clearButtonLabel: string;
   returnUrl: string;
@@ -40,12 +39,11 @@ export class LoginComponent implements OnInit {
 
   ionViewWillEnter() {
     this.loginForm.reset();
-    
+
     // at first, only login is shown, so name won't be required until register is enabled
     this.loginForm.controls['name'].disable();
 
     this.loading = false;
-    this.submitted = false;
     this.registerEnabled = false;
     this.submitButtonLabel = 'Log In';
     this.clearButtonLabel = 'Register';
@@ -98,8 +96,6 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;

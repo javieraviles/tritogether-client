@@ -15,9 +15,9 @@ export class ActivitiesPage {
   currentUser: any = null;
   monthActivities: Activity[] = null;
   todayActivities: Activity[] = null;
-  isUserCoach: Boolean = false;
+  isUserCoach: boolean = false;
   athlete: Athlete = null;
-  hasCoach: Boolean = true;
+  hasCoach: boolean = true;
   today: Date = new Date();
   selectedDate: string = new Date().toISOString().slice(0, 10);
   selectedMonth: string = this.selectedDate.slice(5, 7);

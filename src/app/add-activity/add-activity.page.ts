@@ -16,18 +16,17 @@ export class AddActivityPage implements OnInit {
 
   activityForm: FormGroup;
   disciplines: Discipline[];
-  loading: Boolean = false;
-  submitted: Boolean = false;
+  loading: boolean = false;
   maxDatePicker: string = null;
-  editMode: Boolean = true;
+  editMode: boolean = true;
   activityId: number = null;
   athleteId: number = null;
   selectedDate: Date = null;
   activity: Activity = null;
   athlete: Athlete = null;
   currentUser: any = null;
-  isUserCoach: Boolean = false;
-  availabilityAlert: Boolean = false;
+  isUserCoach: boolean = false;
+  availabilityAlert: boolean = false;
   activityWeekdayName: string = null;
 
   constructor(public toastController: ToastController,
@@ -144,8 +143,6 @@ export class AddActivityPage implements OnInit {
   get f() { return this.activityForm.controls; }
 
   onSubmit() {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.activityForm.invalid) {
       return;

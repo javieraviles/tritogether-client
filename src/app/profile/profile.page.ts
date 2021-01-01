@@ -19,7 +19,6 @@ export class ProfilePage implements OnInit {
   user: any = '';
   isUserCoach: Boolean = false;
   loading = false;
-  submitted = false;
   editMode: Boolean = false;
   notifications: Notification[] = [];
   coaches: Coach[] = null;
@@ -65,7 +64,6 @@ export class ProfilePage implements OnInit {
     this.getUserNotifications();
     this.user = await this.getUserInfo();
     this.editMode = false;
-    this.submitted = false;
     this.loading = false;
     this.userForm.patchValue({
       name: this.user.name,
@@ -136,8 +134,6 @@ export class ProfilePage implements OnInit {
   }
 
   profileSubmit(removeCoach: Boolean = false) {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.userForm.invalid) {
       return;
