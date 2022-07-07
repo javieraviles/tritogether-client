@@ -28,7 +28,7 @@
     "@ionic/angular": "^5.0.0",
     "core-js": "^2.5.4",
     "ion2-calendar": "https://github.com/shaneparsons/ion2-calendar#76ae1e241183500a377647b363c931a03aa50bca",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
